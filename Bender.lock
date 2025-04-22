@@ -15,7 +15,7 @@ packages:
     - apb
     - register_interface
   axi:
-    revision: bec548fa2a9b18cbd7531105bb1fdf481ea8ad49
+    revision: fed6a2f3a92ad7d7b7ef42840901eb218a3c5532
     version: null
     source:
       Git: https://github.com/colluca/axi.git
@@ -129,7 +129,7 @@ packages:
     - scm
     - tech_cells_generic
   common_cells:
-    revision: cd88d4d3288d299c819b4d3754269fce080d0b34
+    revision: 0fd2ba32926c0360534dc3d5795143cb259abb1c
     version: null
     source:
       Git: https://github.com/pulp-platform/common_cells.git
@@ -166,7 +166,7 @@ packages:
       Path: .deps/fhg_spu_cluster
     dependencies: []
   floo_noc:
-    revision: 66d987894e53151bc22584190091d000c4216e6d
+    revision: f2b26a965b45189c106b2cbbfb855f176d5a57fd
     version: null
     source:
       Git: https://github.com/pulp-platform/FlooNoC.git

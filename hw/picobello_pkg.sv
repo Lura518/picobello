@@ -263,7 +263,7 @@ package picobello_pkg;
   typedef logic [aw_bt'(AxiCfgN.AddrWidth)-1:0] user_mask_t;
 
   typedef struct packed {
-    user_mask_t                                   mcast_mask;
+    user_mask_t                                   mask;
     logic [snitch_cluster_pkg::AtomicIdWidth-1:0] atomic;
   } mcast_user_t;
 
@@ -289,7 +289,7 @@ package picobello_pkg;
   // Packed original SAM with extra information necessary for multicast handling
   function automatic sam_multicast_rule_t [SamNumRules-1:0] get_sam_multicast();
     sam_multicast_rule_t [SamNumRules-1:0] sam_multicast;
-
+    int unsigned tileSize;
     int unsigned len_id_x, len_id_y;
     int unsigned offset_id_x, offset_id_y;
     int unsigned empty_cols, empty_rows;

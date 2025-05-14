@@ -132,4 +132,8 @@ module fixture_picobello_top;
     .*
   );
 
+  initial begin
+    print_sam_multicast(sam_multicast);
+  end
+
 endmodule

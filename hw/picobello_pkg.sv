@@ -391,6 +391,28 @@ package picobello_pkg;
     $display("----------------------------------------------------------");
   endfunction
 
+  /////////////////////
+  //   REDUCTION     //
+  /////////////////////
+
+  // Support Reduction on the Wide port
+  localparam bit EnWideOffloadReduction = 0;
+  localparam bit EnNarrowOffloadReduction = 1;
+  localparam bit EnParallelReduction = 1;
+
+  typedef struct packed {
+    user_mask_t                     mcast_mask;
+    floo_pkg::collect_comm_e        coll_type;
+    floo_pkg::reduction_op_e        coll_op;
+    logic [$clog2(NumClusters)-1:0] atomic;
+  } reduction_narrow_user_t;
+
+  typedef struct packed {
+    user_mask_t                     mcast_mask;
+    floo_pkg::collect_comm_e        coll_type;
+    floo_pkg::reduction_op_e        coll_op;
+  } reduction_wide_user_t;
+
   ////////////////
   //  Cheshire  //
   ////////////////

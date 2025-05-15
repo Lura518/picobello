@@ -31,6 +31,10 @@
         alias_region_base: 0x30000000,
         // TODO(fischeti): Check if we need Snitch VM support
         vm_support: false,
+        // Enable Multicast
+        enable_multicast: true,
+        // Direct Compute Acces (DCA)
+        enable_dca: true,
         // Timing parameters
         timing: {
             lat_comp_fp32: 2,

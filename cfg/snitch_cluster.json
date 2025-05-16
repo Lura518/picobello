@@ -11,8 +11,9 @@
         cluster_base_hartid: 1,
         addr_width: 48,
         data_width: 64,
-        atomic_id_width: 5, // clog2(total number of clusters) + 1
-        user_width: 51, // clog2(nr_clusters + 1)
+        atomic_id_width: 3, // clog2(total number of clusters)
+        collectiv_width: 6, // # bits used for the collective operation
+        user_width: 57, // addr_width + atomic_id_width + collectiv_width
         tcdm: {
             size: 128,
             banks: 32,
@@ -20,6 +21,7 @@
         cluster_periph_size: 60, // kB
         zero_mem_size: 64, // kB
         dma_data_width: 512,
+        dma_user_width: 54,
         dma_axi_req_fifo_depth: 3,
         dma_req_fifo_depth: 3,
         narrow_trans: 4,

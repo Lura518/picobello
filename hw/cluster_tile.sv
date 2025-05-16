@@ -68,47 +68,47 @@ module cluster_tile
       offload_dca_req_data = '0;
 
       // Set default Values
-      offload_dca_req_data.src_fmt = fpnew_pkg::FP64;
-      offload_dca_req_data.dst_fmt = fpnew_pkg::FP64;
-      offload_dca_req_data.int_fmt = fpnew_pkg::INT64;
-      offload_dca_req_data.vectorial_op = 1'b0;
-      offload_dca_req_data.op_mod = 1'b0;
-      offload_dca_req_data.rnd_mode = fpnew_pkg::RNE;
-      offload_dca_req_data.op = fpnew_pkg::ADD;
+      offload_dca_req_data.dca_src_format = fpnew_pkg::FP64;
+      offload_dca_req_data.dca_dst_format = fpnew_pkg::FP64;
+      offload_dca_req_data.dca_int_format = fpnew_pkg::INT64;
+      offload_dca_req_data.dca_vector_op = 1'b0;
+      offload_dca_req_data.dca_op_mode = 1'b0;
+      offload_dca_req_data.dca_rnd_mode = fpnew_pkg::RNE;
+      offload_dca_req_data.dca_op_code = fpnew_pkg::ADD;
 
       // Define the operation we want to execute on the FPU
       unique casez (offload_wide_req_operation)
         (floo_pkg::F_Add) : begin
-          offload_dca_req_data.op = fpnew_pkg::ADD;
-          offload_dca_req_data.operands[0] = '0;
-          offload_dca_req_data.operands[1] = offlaod_wide_req_operand[0];
-          offload_dca_req_data.operands[2] = offlaod_wide_req_operand[1];
+          offload_dca_req_data.dca_op_code = fpnew_pkg::ADD;
+          offload_dca_req_data.dca_operands[0] = '0;
+          offload_dca_req_data.dca_operands[1] = offlaod_wide_req_operand[0];
+          offload_dca_req_data.dca_operands[2] = offlaod_wide_req_operand[1];
         end
         (floo_pkg::F_Mul) : begin
-          offload_dca_req_data.op = fpnew_pkg::MUL;
-          offload_dca_req_data.operands[0] = offlaod_wide_req_operand[0];
-          offload_dca_req_data.operands[1] = offlaod_wide_req_operand[1];
-          offload_dca_req_data.operands[2] = '0;
+          offload_dca_req_data.dca_op_code = fpnew_pkg::MUL;
+          offload_dca_req_data.dca_operands[0] = offlaod_wide_req_operand[0];
+          offload_dca_req_data.dca_operands[1] = offlaod_wide_req_operand[1];
+          offload_dca_req_data.dca_operands[2] = '0;
         end                
         (floo_pkg::F_Max) : begin
-          offload_dca_req_data.op = fpnew_pkg::MINMAX;
-          offload_dca_req_data.rnd_mode = fpnew_pkg::RNE;
-          offload_dca_req_data.operands[0] = offlaod_wide_req_operand[0];
-          offload_dca_req_data.operands[1] = offlaod_wide_req_operand[1];
-          offload_dca_req_data.operands[2] = '0;
+          offload_dca_req_data.dca_op_code = fpnew_pkg::MINMAX;
+          offload_dca_req_data.dca_rnd_mode = fpnew_pkg::RNE;
+          offload_dca_req_data.dca_operands[0] = offlaod_wide_req_operand[0];
+          offload_dca_req_data.dca_operands[1] = offlaod_wide_req_operand[1];
+          offload_dca_req_data.dca_operands[2] = '0;
         end
         (floo_pkg::F_Min) : begin
-          offload_dca_req_data.op = fpnew_pkg::MINMAX;
-          offload_dca_req_data.rnd_mode = fpnew_pkg::RTZ;
-          offload_dca_req_data.operands[0] = offlaod_wide_req_operand[0];
-          offload_dca_req_data.operands[1] = offlaod_wide_req_operand[1];
-          offload_dca_req_data.operands[2] = '0;
+          offload_dca_req_data.dca_op_code = fpnew_pkg::MINMAX;
+          offload_dca_req_data.dca_rnd_mode = fpnew_pkg::RTZ;
+          offload_dca_req_data.dca_operands[0] = offlaod_wide_req_operand[0];
+          offload_dca_req_data.dca_operands[1] = offlaod_wide_req_operand[1];
+          offload_dca_req_data.dca_operands[2] = '0;
         end
         default : begin
-          offload_dca_req_data.op = fpnew_pkg::ADD;
-          offload_dca_req_data.operands[0] = '0;
-          offload_dca_req_data.operands[1] = '0;
-          offload_dca_req_data.operands[2] = '0;
+          offload_dca_req_data.dca_op_code = fpnew_pkg::ADD;
+          offload_dca_req_data.dca_operands[0] = '0;
+          offload_dca_req_data.dca_operands[1] = '0;
+          offload_dca_req_data.dca_operands[2] = '0;
         end
       endcase
     end
@@ -225,7 +225,7 @@ floo_nw_router #(
     .offload_wide_resp_valid_i      (offload_wide_resp_valid),
     .offload_wide_resp_ready_o      (offload_wide_resp_ready),
     // Narrow Reduction offload port
-    .offload_narrow_req_op_o        (offlaod_narrow_req_operand),
+    .offload_narrow_req_op_o        (offload_narrow_req_operation),
     .offload_narrow_req_operand1_o  (offlaod_narrow_req_operand[0]),
     .offload_narrow_req_operand2_o  (offlaod_narrow_req_operand[1]),
     .offload_narrow_req_valid_o     (offload_narrow_req_valid),

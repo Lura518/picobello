@@ -166,7 +166,7 @@ packages:
       Path: .deps/fhg_spu_cluster
     dependencies: []
   floo_noc:
-    revision: 62b8cba3b7ecfa89a80ec33659053cb208955e55
+    revision: 6b4001de05ad3c4269d78f27fdc354e2e72d49a3
     version: null
     source:
       Git: https://github.com/Lura518/FlooNoC.git
@@ -270,7 +270,7 @@ packages:
     - common_cells
     - register_interface
   snitch_cluster:
-    revision: 8ae7d0304a9664dc6c51c37b572439368da56015
+    revision: 2d6fdcba3f5b4b2a35d95435a3dc4860dee0fdde
     version: null
     source:
       Git: https://github.com/Lore0599/snitch_cluster.git

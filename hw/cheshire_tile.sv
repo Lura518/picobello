@@ -89,29 +89,51 @@ module cheshire_tile
   floo_wide_t [Eject:North] router_floo_wide_out, router_floo_wide_in;
 
   floo_nw_router #(
-    .AxiCfgN     (AxiCfgN),
-    .AxiCfgW     (AxiCfgW),
-    .RouteAlgo   (RouteCfgNoMcast.RouteAlgo),
-    .NumRoutes   (5),
-    .InFifoDepth (2),
-    .OutFifoDepth(2),
-    .id_t        (id_t),
-    .hdr_t       (hdr_t),
-    .floo_req_t  (floo_req_t),
-    .floo_rsp_t  (floo_rsp_t),
-    .floo_wide_t (floo_wide_t)
+    .AxiCfgN                        (AxiCfgN),
+    .AxiCfgW                        (AxiCfgW),
+    .RouteAlgo                      (RouteCfgNoMcast.RouteAlgo),
+    .NumRoutes                      (5),
+    .InFifoDepth                    (2),
+    .OutFifoDepth                   (2),
+    .id_t                           (id_t),
+    .hdr_t                          (hdr_t),
+    .floo_req_t                     (floo_req_t),
+    .floo_rsp_t                     (floo_rsp_t),
+    .floo_wide_t                    (floo_wide_t),
+    .EnMultiCast                    (1'b0),
+    .EnParallelReduction            (1'b0),
+    .EnOffloadWideReduction         (1'b0),
+    .EnOffloadNarrowReduction       (1'b0)
   ) i_router (
     .clk_i,
     .rst_ni,
     .id_i,
-    .test_enable_i (test_mode_i),
-    .id_route_map_i('0),
-    .floo_req_i    (router_floo_req_in),
-    .floo_rsp_o    (router_floo_rsp_out),
-    .floo_req_o    (router_floo_req_out),
-    .floo_rsp_i    (router_floo_rsp_in),
-    .floo_wide_i   (router_floo_wide_in),
-    .floo_wide_o   (router_floo_wide_out)
+    .test_enable_i                  (test_mode_i),
+    .id_route_map_i                 ('0),
+    .floo_req_i                     (router_floo_req_in),
+    .floo_rsp_o                     (router_floo_rsp_out),
+    .floo_req_o                     (router_floo_req_out),
+    .floo_rsp_i                     (router_floo_rsp_in),
+    .floo_wide_i                    (router_floo_wide_in),
+    .floo_wide_o                    (router_floo_wide_out),
+    // Wide Reduction offload port
+    .offload_wide_req_op_o          (),
+    .offload_wide_req_operand1_o    (),
+    .offload_wide_req_operand2_o    (),
+    .offload_wide_req_valid_o       (),
+    .offload_wide_req_ready_i       ('0),
+    .offload_wide_resp_result_i     ('0),
+    .offload_wide_resp_valid_i      ('0),
+    .offload_wide_resp_ready_o      (),
+    // Narrow Reduction offload port
+    .offload_narrow_req_op_o        (),
+    .offload_narrow_req_operand1_o  (),
+    .offload_narrow_req_operand2_o  (),
+    .offload_narrow_req_valid_o     (),
+    .offload_narrow_req_ready_i     ('0),
+    .offload_narrow_resp_result_i   ('0),
+    .offload_narrow_resp_valid_i    ('0),
+    .offload_narrow_resp_ready_o    ()
   );
 
   assign floo_req_o                      = router_floo_req_out[West:North];
@@ -158,7 +180,9 @@ module cheshire_tile
     .axi_wide_out_rsp_t  (axi_wide_out_rsp_t),
     .floo_req_t          (floo_req_t),
     .floo_rsp_t          (floo_rsp_t),
-    .floo_wide_t         (floo_wide_t)
+    .floo_wide_t         (floo_wide_t),
+    .user_narrow_struct_t(reduction_narrow_user_t),
+    .user_wide_struct_t  (reduction_wide_user_t)
   ) i_chimney (
     .clk_i,
     .rst_ni,

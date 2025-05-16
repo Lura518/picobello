@@ -179,7 +179,9 @@ module cheshire_tile
     .floo_wide_o         (router_floo_wide_in[Eject]),
     .floo_req_i          (router_floo_req_out[Eject]),
     .floo_rsp_i          (router_floo_rsp_out[Eject]),
-    .floo_wide_i         (router_floo_wide_out[Eject])
+    .floo_wide_i         (router_floo_wide_out[Eject]),
+    .user_narrow_struct_t(reduction_narrow_user_t),
+    .user_wide_struct_t  (reduction_wide_user_t)
   );
 
   /////////////

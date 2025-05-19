@@ -396,7 +396,7 @@ package picobello_pkg;
   /////////////////////
 
   // Support Reduction on the Wide port
-  localparam bit EnWideOffloadReduction = 1;
+  localparam bit EnWideOffloadReduction = 0;
   localparam bit EnNarrowOffloadReduction = 1;
   localparam bit EnParallelReduction = 1;
 

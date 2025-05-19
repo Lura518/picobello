@@ -32,14 +32,28 @@ protocols:
     data_width: 512
     addr_width: 48
     id_width: 3
-    user_width: 54
+    user_width: 1
   - name: "wide_out"
     type: "wide"
     protocol: "AXI4"
     data_width: 512
     addr_width: 48
     id_width: 1
-    user_width: 54
+    user_width: 1
+#  - name: "wide_in"
+#    type: "wide"
+#    protocol: "AXI4"
+#    data_width: 512
+#    addr_width: 48
+#    id_width: 3
+#    user_width: 54
+#  - name: "wide_out"
+#    type: "wide"
+#    protocol: "AXI4"
+#    data_width: 512
+#    addr_width: 48
+#    id_width: 1
+#    user_width: 54
 
 endpoints:
   - name: "cluster"

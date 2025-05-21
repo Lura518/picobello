@@ -401,10 +401,10 @@ package picobello_pkg;
   localparam bit EnParallelReduction = 1;
 
   typedef struct packed {
-    user_mask_t                     mcast_mask;
-    floo_pkg::collect_comm_e        coll_type;
-    floo_pkg::reduction_op_e        coll_op;
-    logic [$clog2(NumClusters)-1:0] atomic;
+    user_mask_t                                   mcast_mask;
+    floo_pkg::collect_comm_e                      coll_type;
+    floo_pkg::reduction_op_e                      coll_op;
+    logic [snitch_cluster_pkg::AtomicIdWidth-1:0] atomic;
   } reduction_narrow_user_t;
 
   typedef struct packed {

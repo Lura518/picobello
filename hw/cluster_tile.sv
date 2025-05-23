@@ -305,6 +305,8 @@ floo_nw_router #(
     .EnMultiCast                  (RouteCfg.EnMultiCast),
     .EnWideCollectiveOperation    (EnWideOffloadReduction),
     .EnNarrowCollectiveOperation  (EnParallelReduction | EnNarrowOffloadReduction),
+    .EnMaskingWideCollectivOperation    (1'b1),
+    .EnMaskingNarrowCollectivOperation  (1'b1),
     .id_t                         (floo_picobello_noc_pkg::id_t),
     .rob_idx_t                    (floo_picobello_noc_pkg::rob_idx_t),
     .hdr_t                        (floo_picobello_noc_pkg::hdr_t),

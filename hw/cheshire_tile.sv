@@ -7,6 +7,7 @@
 `include "cheshire/typedef.svh"
 `include "floo_noc/typedef.svh"
 `include "axi/assign.svh"
+`include "common_cells/assertions.svh"
 
 module cheshire_tile
   import cheshire_pkg::*;
@@ -421,5 +422,16 @@ module cheshire_tile
     .slv_req_i (dram_slink_err_req),
     .slv_resp_o(dram_slink_err_rsp)
   );
+
+  // Add Assertion that no multicast / reduction can enter this tile!
+  for (genvar r = 0; r < 4; r++) begin : gen_virt
+    `ASSERT(NoCollectivOperation_NReq_In, (!floo_req_i[r].valid | (floo_req_i[r].req.generic.hdr.commtype == Unicast)))
+    `ASSERT(NoCollectivOperation_NRsp_In, (!floo_rsp_i[r].valid | (floo_rsp_i[r].rsp.generic.hdr.commtype == Unicast)))
+    `ASSERT(NoCollectivOperation_NWide_In, (!floo_wide_i[r].valid | (floo_wide_i[r].wide.generic.hdr.commtype == Unicast)))
+    `ASSERT(NoCollectivOperation_NReq_Out, (!floo_req_o[r].valid | (floo_req_o[r].req.generic.hdr.commtype == Unicast)))
+    `ASSERT(NoCollectivOperation_NRsp_Out, (!floo_rsp_o[r].valid | (floo_rsp_o[r].rsp.generic.hdr.commtype == Unicast)))
+    `ASSERT(NoCollectivOperation_NWide_Out, (!floo_wide_o[r].valid | (floo_wide_o[r].wide.generic.hdr.commtype == Unicast)))
+  end
+
 
 endmodule

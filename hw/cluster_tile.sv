@@ -33,6 +33,10 @@ module cluster_tile
   input  floo_wide_t                [ West:North] floo_wide_i
 );
 
+  floo_req_t [Eject:North] router_floo_req_out, router_floo_req_in;
+  floo_rsp_t [Eject:North] router_floo_rsp_out, router_floo_rsp_in;
+  floo_wide_t [Eject:North] router_floo_wide_out, router_floo_wide_in;
+
   ////////////////////////
   // Wide FPU Reduction //
   ////////////////////////
@@ -146,7 +150,7 @@ module cluster_tile
   if(EnNarrowOffloadReduction) begin : gen_narrow_offload_reduction
     floo_reduction_alu #(
       .ID                   (0),
-      .DEBUG_PRINT_TRACE    (1'b1)
+      .DEBUG_PRINT_TRACE    (1'b0)
     ) i_alu (
       .clk_i                (clk_i),
       .rst_ni               (rst_ni),
@@ -167,13 +171,48 @@ module cluster_tile
     assign offload_narrow_resp_valid = '0;
   end
 
+  ///////////////////////////////
+  // Debug (Offload) Reduction //
+  ///////////////////////////////
+
+picobello_floo_logger #(
+  .LOG_INPUT_COLL_OPERATION     (1'b1),
+  .LOG_OUTPUT_COLL_OPERATION    (1'b1),
+  .LOG_NARROW_REQUEST           (1'b1),
+  .LOG_NARROW_RESPOND           (1'b1),
+  .LOG_WIDE_REQUEST             (1'b1),
+  .tile_type                    ("Cluster")
+) i_floo_logger (
+  .clk_i                        (clk_i),
+  .id_i                         (id_i),
+  .floo_req_out                 (router_floo_req_out),
+  .floo_req_in                  (router_floo_req_in),
+  .floo_rsp_out                 (router_floo_rsp_out),
+  .floo_rsp_in                  (router_floo_rsp_in),
+  .floo_wide_out                (router_floo_wide_out),
+  .floo_wide_in                 (router_floo_wide_in)
+);
+
+picobello_offload_logger #(
+  .LOG_OFFLOAD_OPERATION        (1'b1),
+  .DATA_DOUBLE                  (1'b0),
+  .data_t                       (RdDataNarrow_t),
+  .tile_type                    ("Cluster")
+) i_offload_logger (
+  .clk_i                        (clk_i),
+  .id_i                         (id_i),
+  .offload_req_operands         (offlaod_narrow_req_operand),
+  .offload_req_operation        (offload_narrow_req_operation),
+  .offload_req_valid            (offload_narrow_req_valid),
+  .offload_req_ready            (offload_narrow_req_ready),
+  .offload_resp_result          (offlaod_narrow_resp_data),
+  .offload_resp_valid           (offload_narrow_resp_valid),
+  .offload_resp_ready           (offload_narrow_resp_ready)
+);
+
   ////////////
   // Router //
   ////////////
-
-  floo_req_t [Eject:North] router_floo_req_out, router_floo_req_in;
-  floo_rsp_t [Eject:North] router_floo_rsp_out, router_floo_rsp_in;
-  floo_wide_t [Eject:North] router_floo_wide_out, router_floo_wide_in;
 
 floo_nw_router #(
     .AxiCfgN                  (AxiCfgN),

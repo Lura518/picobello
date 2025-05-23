@@ -39,6 +39,7 @@ sources:
     files:
     - .generated/snitch_cluster_wrapper.sv
   - hw/picobello_pkg.sv
+  - hw/picobello_tracer_collective.sv
   # Level 2
   - hw/cluster_tile.sv
   - hw/cheshire_tile.sv

@@ -8,6 +8,8 @@
 // The core run an lsb and reduction between cluster 0 and cluster 1 with the destination cluster 3
 // It works only on the mini_picobello configuration as it is address dependent!
 
+// !!! Needs to be called with simple_offload.spm.elf !!!
+
 // Src Adr Cluster 0: 48'h000020000000
 // Src Adr Cluster 1: 48'h000020040000
 // Dst Adr Cluster 3: 48'h0000200c0000
@@ -39,7 +41,7 @@ int main (void){
 
 	// We only want to work with core 0's
     if(core_id == 0){
-		// TODO raroth: run the reducion par here
+		// start the reduction in cluster 0 and 1
 		if((cluster_id == 0) || (cluster_id == 1)){
 			snrt_enable_reduction(mask, 12);				// Enable Parallel Reduction
 			*((uint32_t *) addr) = 1;

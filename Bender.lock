@@ -15,10 +15,10 @@ packages:
     - apb
     - register_interface
   axi:
-    revision: bec548fa2a9b18cbd7531105bb1fdf481ea8ad49
+    revision: 1b696ba84e841bf4720c50fb09eb22d4371cfc09
     version: null
     source:
-      Git: https://github.com/colluca/axi.git
+      Git: https://github.com/Lura518/axi.git
     dependencies:
     - common_cells
     - common_verification
@@ -166,7 +166,7 @@ packages:
       Path: .deps/fhg_spu_cluster
     dependencies: []
   floo_noc:
-    revision: 945e804b90b0d59a43f4c05daee9fd4d1285def7
+    revision: d2df97ee01f9a1e317467b8dd97348c6e2d754d4
     version: null
     source:
       Git: https://github.com/Lura518/FlooNoC.git
@@ -270,7 +270,7 @@ packages:
     - common_cells
     - register_interface
   snitch_cluster:
-    revision: 2d6fdcba3f5b4b2a35d95435a3dc4860dee0fdde
+    revision: f81216531e1b5009cc13fbe7859e70aab76c037d
     version: null
     source:
       Git: https://github.com/Lore0599/snitch_cluster.git

@@ -181,6 +181,7 @@ picobello_floo_logger #(
   .LOG_NARROW_REQUEST           (1'b1),
   .LOG_NARROW_RESPOND           (1'b1),
   .LOG_WIDE_REQUEST             (1'b1),
+  .LOG_LOCAL_PORT               (1'b1),
   .tile_type                    ("Cluster")
 ) i_floo_logger (
   .clk_i                        (clk_i),
@@ -241,7 +242,7 @@ floo_nw_router #(
     .RdPartialBufferSize      (3),
     .RdTagBits                (5),
     .RdSupportAxi             (1'b1),
-    .RdSupportLoopback        (1'b0)
+    .RdSupportLoopback        (1'b1)
 ) i_router (
     .clk_i,
     .rst_ni,

@@ -192,10 +192,10 @@ packages:
     dependencies:
     - common_cells
   idma:
-    revision: c396bbf477457b184a74b7f2386302f5895bb522
+    revision: 849500436e9578452555f2053d2a3453fd8283e5
     version: null
     source:
-      Git: https://github.com/pulp-platform/iDMA.git
+      Git: https://github.com/Lura518/iDMA.git
     dependencies:
     - axi
     - axi_stream

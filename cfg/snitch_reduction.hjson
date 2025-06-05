@@ -21,8 +21,7 @@
         cluster_periph_size: 60, // kB
         zero_mem_size: 64, // kB
         dma_data_width: 512,
-        dma_user_width: 1,
-        //dma_user_width: 54,
+        dma_user_width: 54, // addr_width + collectiv_width
         dma_axi_req_fifo_depth: 3,
         dma_req_fifo_depth: 3,
         narrow_trans: 4,
@@ -33,11 +32,10 @@
         // TODO(fischeti): Check if we need Snitch VM support
         vm_support: false,
         // Enable Multicast
-        //enable_multicast: true,
-        enable_multicast: false,
+        enable_multicast: true,
         // Direct Compute Acces (DCA)
-        //enable_dca: true,
-        enable_dca: false,
+        enable_dca: true,
+        enable_reroute_collectiv: true,
         // Timing parameters
         timing: {
             lat_comp_fp32: 2,

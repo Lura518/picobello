@@ -199,7 +199,7 @@ picobello_offload_logger #(
   .DATA_DOUBLE                  (1'b0),
   .data_t                       (RdDataNarrow_t),
   .tile_type                    ("Cluster")
-) i_offload_logger (
+) i_offload_narrow_logger (
   .clk_i                        (clk_i),
   .id_i                         (id_i),
   .offload_req_operands         (offlaod_narrow_req_operand),
@@ -209,6 +209,23 @@ picobello_offload_logger #(
   .offload_resp_result          (offlaod_narrow_resp_data),
   .offload_resp_valid           (offload_narrow_resp_valid),
   .offload_resp_ready           (offload_narrow_resp_ready)
+);
+
+picobello_offload_logger #(
+  .LOG_OFFLOAD_OPERATION        (1'b1),
+  .DATA_DOUBLE                  (1'b1),
+  .data_t                       (RdDataWide_t),
+  .tile_type                    ("Cluster")
+) i_offload_wide_logger (
+  .clk_i                        (clk_i),
+  .id_i                         (id_i),
+  .offload_req_operands         (offlaod_wide_req_operand),
+  .offload_req_operation        (offload_wide_req_operation),
+  .offload_req_valid            (offload_wide_req_valid),
+  .offload_req_ready            (offload_wide_req_ready),
+  .offload_resp_result          (offlaod_wide_resp_data),
+  .offload_resp_valid           (offload_wide_resp_valid),
+  .offload_resp_ready           (offload_wide_resp_ready)
 );
 
   ////////////

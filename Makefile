@@ -10,7 +10,7 @@ BENDER_ROOT ?= $(PB_ROOT)/.bender
 
 # Configuration files
 FLOO_CFG  ?= $(PB_ROOT)/cfg/mini_picobello_noc.yml
-SN_CFG	  ?= $(PB_ROOT)/cfg/snitch_cluster.json
+SN_CFG	  ?= $(PB_ROOT)/cfg/snitch_reduction.hjson
 PLIC_CFG  ?= $(PB_ROOT)/cfg/rv_plic.cfg.hjson
 SLINK_CFG ?= $(PB_ROOT)/cfg/serial_link.hjson
 
@@ -69,7 +69,7 @@ sn-hw-clean:
 # FlooNoC #
 ###########
 
-SN_CLUSTERS = 16
+SN_CLUSTERS = 4
 .PHONY: update-sn-cfg
 update-sn-cfg: $(SN_CFG)
 	@sed -i 's/nr_clusters: .*/nr_clusters: $(SN_CLUSTERS),/' $<

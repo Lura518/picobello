@@ -175,6 +175,21 @@ module cluster_tile
   // Debug (Offload) Reduction //
   ///////////////////////////////
 
+  // Track AXI Messages!
+  initial begin
+    forever begin
+      @(posedge clk_i);
+      // Display AXI AW
+      if((chimney_wide_in_req.aw_valid == 1'b1) && (chimney_wide_in_rsp.aw_ready)) begin
+        $display($time, "Cluster Tile (x:[%1d] y:[%1d]) >>> AXI AW dedected (user: %h)", id_i.x, id_i.y, chimney_wide_in_req.aw.user);
+      end
+      // Display AXI W
+      if((chimney_wide_in_req.w_valid == 1'b1) && (chimney_wide_in_rsp.w_ready)) begin
+        $display($time, "Cluster Tile (x:[%1d] y:[%1d]) >>> AXI W  dedected", id_i.x, id_i.y);
+      end
+    end
+  end
+
 picobello_floo_logger #(
   .LOG_INPUT_COLL_OPERATION     (1'b1),
   .LOG_OUTPUT_COLL_OPERATION    (1'b1),

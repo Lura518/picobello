@@ -257,7 +257,7 @@ module picobello_offload_logger
             if(offload_req_valid && offload_req_ready) begin
                 f_send_message = 1'b1;
                 if(DATA_DOUBLE) begin
-                    combined_message = {combined_message, "# REQ: ", op_codes_offload[offload_req_operation], " Data [ ", $sformatf("%f", offload_req_operands[1][63:0]), " , ", $sformatf("%f", offload_req_operands[0][63:0]), " ] "};
+                    combined_message = {combined_message, "# REQ: ", op_codes_offload[offload_req_operation], " Data [ ", $sformatf("%f", $bitstoreal(offload_req_operands[1][63:0])), " , ", $sformatf("%f", $bitstoreal(offload_req_operands[0][63:0])), " ] "};
                 end else begin
                     combined_message = {combined_message, "# REQ: ", op_codes_offload[offload_req_operation], " Data [ ", $sformatf("%d", offload_req_operands[1][63:0]), " , ", $sformatf("%d", offload_req_operands[0][63:0]), " ] "};
                 end
@@ -267,7 +267,7 @@ module picobello_offload_logger
             if(offload_resp_valid && offload_resp_ready) begin
                 f_send_message = 1'b1;
                 if(DATA_DOUBLE) begin
-                    combined_message = {combined_message, "# RESP: Data [ ", $sformatf("%f", offload_resp_result[63:0]), " ] "};
+                    combined_message = {combined_message, "# RESP: Data [ ", $sformatf("%f", $bitstoreal(offload_resp_result[63:0])), " ] "};
                 end else begin
                     combined_message = {combined_message, "# RESP: Data [ ", $sformatf("%d", offload_resp_result[63:0]), " ] "};
                 end

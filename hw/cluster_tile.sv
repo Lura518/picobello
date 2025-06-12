@@ -180,12 +180,18 @@ module cluster_tile
     forever begin
       @(posedge clk_i);
       // Display AXI AW
-      if((chimney_wide_in_req.aw_valid == 1'b1) && (chimney_wide_in_rsp.aw_ready)) begin
-        $display($time, "Cluster Tile (x:[%1d] y:[%1d]) >>> AXI AW dedected (user: %h)", id_i.x, id_i.y, chimney_wide_in_req.aw.user);
+      if((cluster_wide_out_req.aw_valid == 1'b1) && (cluster_wide_out_rsp.aw_ready)) begin
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** OUT *** AXI AW dedected (user: %h)", id_i.x, id_i.y, cluster_wide_out_req.aw.user);
+      end
+      if((cluster_wide_out_req.w_valid == 1'b1) && (cluster_wide_out_rsp.w_ready)) begin
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** OUT *** AXI W dedected", id_i.x, id_i.y);
       end
       // Display AXI W
-      if((chimney_wide_in_req.w_valid == 1'b1) && (chimney_wide_in_rsp.w_ready)) begin
-        $display($time, "Cluster Tile (x:[%1d] y:[%1d]) >>> AXI W  dedected", id_i.x, id_i.y);
+      if((cluster_wide_in_req.aw_valid == 1'b1) && (cluster_wide_in_rsp.aw_ready)) begin
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** IN *** AXI AW dedected (user: %h)", id_i.x, id_i.y, cluster_wide_in_req.aw.user);
+      end
+      if((cluster_wide_in_req.w_valid == 1'b1) && (cluster_wide_in_rsp.w_ready)) begin
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** IN *** AXI W dedected", id_i.x, id_i.y);
       end
     end
   end

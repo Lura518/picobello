@@ -17,7 +17,8 @@
 #define LENGTH_TO_CHECK (LENGTH)
 
 int main() {
-    snrt_int_clr_mcip();
+    snrt_interrupt_enable(IRQ_M_CLUSTER);
+    //snrt_int_clr_mcip();
 
     // Set default values
     double init_data = 15.0;
@@ -34,14 +35,18 @@ int main() {
     double *buffer_dst = snrt_l1_next_v2();
     double *buffer_src = buffer_dst + LENGTH;
 
-    // First cluster initializes the source buffer and multicast-
-    // copies it to the destination buffer in every cluster's TCDM.
+    // Fill the source buffer with the init data
     if (snrt_is_dm_core()) {
-        // Fill the source buffer with data
         for (uint32_t i = 0; i < LENGTH; i++) {
             buffer_src[i] = init_data;
         }
+    }
+
+    // Wait until the cluster are finished (Guard dma call aginst the one in the startup script)
+    snrt_global_barrier();
+
         // Init the DMA multicast
+    if (snrt_is_dm_core()) {
         snrt_dma_start_1d_collectiv(snrt_remote_l1_ptr(buffer_dst, cluster_id, 0), buffer_src, LENGTH * sizeof(double), (void *) mask, 52);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
         snrt_dma_wait_all();
     }

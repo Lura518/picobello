@@ -20,7 +20,8 @@
 #include "snrt.h"
 
 int main (void){
-    snrt_int_clr_mcip();
+    snrt_interrupt_enable(IRQ_M_CLUSTER);
+    //snrt_int_clr_mcip();
 
     // Get core id
     uint32_t core_id = snrt_cluster_core_idx();

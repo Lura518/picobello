@@ -13,7 +13,7 @@
 #include "snrt.h"
 
 int main (void) {
-
+	snrt_interrupt_enable(IRQ_M_CLUSTER);
 	snrt_global_barrier();
 	return 0;
 }

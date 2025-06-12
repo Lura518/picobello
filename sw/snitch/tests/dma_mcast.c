@@ -14,12 +14,14 @@
 #include "picobello_addrmap.h"
 #include "snrt.h"
 
+#define WRONG_DATA 0xBBBBBBBB
 #define INITIALIZER 0xAAAAAAAA
 #define LENGTH 32
 #define LENGTH_TO_CHECK 32
 
 int main() {
-    snrt_int_clr_mcip();
+    snrt_interrupt_enable(IRQ_M_CLUSTER);
+    //snrt_int_clr_mcip();
 
     // Get core id
     uint32_t core_id = snrt_cluster_core_idx();
@@ -31,6 +33,17 @@ int main() {
     // Allocate destination buffer
     uint32_t *buffer_dst = snrt_l1_next_v2();
     uint32_t *buffer_src = buffer_dst + LENGTH;
+
+    // Fill the allocated space with wrong data expect for cluster 0
+    if(snrt_is_dm_core()){
+        // Fill the destination with wrong data
+        for (uint32_t i = 0; i < LENGTH; i++) {
+            buffer_dst[i] = WRONG_DATA;
+        }
+    }
+
+    // Wait until the cluster are finished
+    snrt_global_barrier();
 
     // First cluster initializes the source buffer and multicast-
     // copies it to the destination buffer in every cluster's TCDM.
@@ -47,8 +60,8 @@ int main() {
     // Wait until the cluster are finished
     snrt_global_barrier();
 
-    // Every cluster except cluster 0 checks that the data in the destination
-    // buffer is correct. To speed this up we only check the first 32 elements.
+    // Every cluster checks that the data in the destination
+    // buffer is correct. To speed this up we can define a subset of data to check
     if (snrt_is_dm_core()) {
         uint32_t n_errs = LENGTH_TO_CHECK;
         for (uint32_t i = 0; i < LENGTH_TO_CHECK; i++) {

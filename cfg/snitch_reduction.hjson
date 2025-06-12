@@ -31,10 +31,14 @@
         alias_region_base: 0x28000000,
         // TODO(fischeti): Check if we need Snitch VM support
         vm_support: false,
-        // Enable Multicast
+        // Enable the multicast and the reduction feature in the sw (Only Narrow IF - Not DMA calls)
         enable_multicast: true,
-        // Direct Compute Acces (DCA)
+        enable_reduction: true,
+        // To support 512-Bit FPU reduction use the Direct Compute Acces (DCA)
         enable_dca: true,
+        // To support the multicast for the DMA
+        enable_DMA_multicast: true,
+        // Currently we need to reroute collectiv operation to the SoC IF independent of the dst address
         enable_reroute_collectiv: true,
         // Timing parameters
         timing: {

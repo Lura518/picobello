@@ -137,7 +137,6 @@ module mem_tile
     .RouteCfg                         (RouteCfgNoMcast),
     .AtopSupport                      (1'b1),
     .MaxAtomicTxns                    (1),
-    .EnMultiCast                      (1'b0),
     .EnWideCollectiveOperation        (1'b0),
     .EnNarrowCollectiveOperation      (1'b0),
     .EnBRespNarrowCollectiveOperation (1'b1),

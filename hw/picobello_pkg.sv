@@ -309,7 +309,7 @@ package picobello_pkg;
     // TODO(lleone): This is a temporary solution. In a fully configurable system,
     // the base ID doesn't match with the number of empty rows/columns. This is
     // true only in the 7x4 mesh.
-    empty_cols  = $countones(get_empty_cols(MeshMap));
+    empty_cols  = $countones(get_empty_cols(MeshMap) + 1);
     empty_rows  = $countones(get_empty_rows(MeshMap));
 
     for (int rule = 0; rule < SamNumRules; rule++) begin

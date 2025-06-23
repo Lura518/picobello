@@ -182,7 +182,7 @@ module picobello_top
   // FhG SPU tile //
   //////////////////
 
-  /*
+  
   // TODO: Connect the debug and interrupt signals
   logic [8:0] fhg_spu_debug_req, fhg_spu_meip, fhg_spu_mtip, fhg_spu_msip;
 
@@ -215,7 +215,7 @@ module picobello_top
     .floo_rsp_o         (floo_rsp_out[FhgSpuPhysicalId.x][FhgSpuPhysicalId.y]),
     .floo_wide_i        (floo_wide_in[FhgSpuPhysicalId.x][FhgSpuPhysicalId.y])
   );
-  */
+  
 
   //////////////
   // Mem tile //

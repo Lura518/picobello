@@ -4,22 +4,23 @@
 
 // Cluster configuration for a simple testbench system.
 {
-    nr_clusters: 4,
+    nr_clusters: 16,
     cluster: {
         cluster_base_addr: 0x20000000,
         cluster_base_offset: 0x40000,
         cluster_base_hartid: 1,
         addr_width: 48,
         data_width: 64,
-        atomic_id_width: 3, // clog2(total number of clusters)
+        atomic_id_width: 5, // clog2(total number of clusters)
         collectiv_width: 6, // # bits used for the collective operation
-        user_width: 57, // addr_width + atomic_id_width + collectiv_width
+        user_width: 59, // addr_width + atomic_id_width + collectiv_width
         tcdm: {
             size: 128,
             banks: 32,
         },
         cluster_periph_size: 60, // kB
-        zero_mem_size: 64, // kB
+        zero_mem_size: 60, // kB
+        ext_mem_size: 4, //kB
         dma_data_width: 512,
         dma_user_width: 54, // addr_width + collectiv_width
         dma_axi_req_fifo_depth: 3,

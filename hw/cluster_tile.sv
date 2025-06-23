@@ -275,7 +275,7 @@ floo_nw_router #(
     .RdWideData_t             (RdDataWide_t),
     .RdNarrowData_t           (RdDataNarrow_t),
     .RdFifoFallThrough        (1'b1),
-    .RdFifoDepth              (2),
+    .RdFifoDepth              (3),
     .RdPipelineDepth          (3),  // TODO (raroth): Pipeline Depth is dependent on Wide (3) / Narrow (1)
     .RdControllerComplex      (2),
     .RdPartialBufferSize      (3),

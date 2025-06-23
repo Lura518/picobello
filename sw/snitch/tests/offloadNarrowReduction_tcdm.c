@@ -28,7 +28,7 @@ int main (void){
 	uint32_t cluster_id = snrt_cluster_idx();
 
 	// Generate the mask (take the difference in the start address should be sufficient)
-	uint32_t mask = 0x000C0000;
+	uint32_t mask = SNRT_BROADCAST_MASK;
 
 	// Determint an end address in the adr range of the 0th cluster
 	uintptr_t addr = 0x000020000100;

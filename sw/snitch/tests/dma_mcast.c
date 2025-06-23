@@ -28,7 +28,7 @@ int main() {
 	uint32_t cluster_id = snrt_cluster_idx();
 
     // Set the mask for the multicast
-    uint32_t mask = 0x000C0000;
+    uint32_t mask = SNRT_BROADCAST_MASK;
 
     // Allocate destination buffer
     uint32_t *buffer_dst = (uint32_t *) snrt_l1_next_v2();

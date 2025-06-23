@@ -15,7 +15,7 @@ packages:
     - apb
     - register_interface
   axi:
-    revision: 1b696ba84e841bf4720c50fb09eb22d4371cfc09
+    revision: 06381e5abcc61815b176f65121d11feb046924e6
     version: null
     source:
       Git: https://github.com/Lura518/axi.git
@@ -129,7 +129,7 @@ packages:
     - scm
     - tech_cells_generic
   common_cells:
-    revision: 0fd2ba32926c0360534dc3d5795143cb259abb1c
+    revision: 20257eae0c545ecf381e264ca057b109508faecb
     version: null
     source:
       Git: https://github.com/pulp-platform/common_cells.git
@@ -166,7 +166,7 @@ packages:
       Path: .deps/fhg_spu_cluster
     dependencies: []
   floo_noc:
-    revision: d2df97ee01f9a1e317467b8dd97348c6e2d754d4
+    revision: bc36fd22574bfd3a35e9ec9dc7b5c8daff9c7229
     version: null
     source:
       Git: https://github.com/Lura518/FlooNoC.git
@@ -192,10 +192,10 @@ packages:
     dependencies:
     - common_cells
   idma:
-    revision: 849500436e9578452555f2053d2a3453fd8283e5
+    revision: 7829f71691a62c1e2e5e3230f370f222c7a83087
     version: null
     source:
-      Git: https://github.com/Lura518/iDMA.git
+      Git: https://github.com/pulp-platform/iDMA.git
     dependencies:
     - axi
     - axi_stream
@@ -270,10 +270,10 @@ packages:
     - common_cells
     - register_interface
   snitch_cluster:
-    revision: ce5c97b86e2596ff97e5b7073df91b88843983cc
+    revision: ba302b840d12006c5d8f494ffb6bf45e929eeb1c
     version: null
     source:
-      Git: https://github.com/Lore0599/snitch_cluster.git
+      Git: https://github.com/Lura518/snitch_cluster.git
     dependencies:
     - axi
     - axi_riscv_atomics

@@ -9,10 +9,10 @@ package:
 
 dependencies:
   register_interface: { git: "https://github.com/pulp-platform/register_interface.git", version: "0.4.5" }
-  axi: { git: "https://github.com/pulp-platform/axi.git", version: "0.39.6" }
+  axi: { git: "https://github.com/Lura518/axi.git", rev: "reduction" }
   common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: "1.37.0" }
   cheshire: { git: "https://github.com/pulp-platform/cheshire.git", rev: "main" }
-  snitch_cluster:  { git: "https://github.com/Lore0599/snitch_cluster.git", rev: "feature/reduction" }
+  snitch_cluster:  { git: "https://github.com/Lura518/snitch_cluster.git", rev: "feature/narrow_reduction" }
   floo_noc: { git: "https://github.com/Lura518/FlooNoC.git", rev: "feature/offloadReduction"}
   obi: { git: "https://github.com/pulp-platform/obi.git", rev: "ad1d48f025be540344960ea83b4bff39876f9b36"}
   axi_obi: { path: "hw/axi_obi" }

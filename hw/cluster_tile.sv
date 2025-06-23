@@ -181,17 +181,17 @@ module cluster_tile
       @(posedge clk_i);
       // Display AXI AW
       if((cluster_wide_out_req.aw_valid == 1'b1) && (cluster_wide_out_rsp.aw_ready)) begin
-        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** OUT *** AXI AW dedected (user: %h)", id_i.x, id_i.y, cluster_wide_out_req.aw.user);
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) AXI     > *** OUT *** AXI AW dedected (user: %h)", id_i.x, id_i.y, cluster_wide_out_req.aw.user);
       end
       if((cluster_wide_out_req.w_valid == 1'b1) && (cluster_wide_out_rsp.w_ready)) begin
-        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** OUT *** AXI W dedected", id_i.x, id_i.y);
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) AXI     > *** OUT *** AXI W dedected", id_i.x, id_i.y);
       end
       // Display AXI W
       if((cluster_wide_in_req.aw_valid == 1'b1) && (cluster_wide_in_rsp.aw_ready)) begin
-        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** IN *** AXI AW dedected (user: %h)", id_i.x, id_i.y, cluster_wide_in_req.aw.user);
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) AXI     > *** IN *** AXI AW dedected (user: %h)", id_i.x, id_i.y, cluster_wide_in_req.aw.user);
       end
       if((cluster_wide_in_req.w_valid == 1'b1) && (cluster_wide_in_rsp.w_ready)) begin
-        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) >>> *** IN *** AXI W dedected", id_i.x, id_i.y);
+        $display($time, " Cluster Tile (x:[%1d] y:[%1d]) AXI     > *** IN *** AXI W dedected", id_i.x, id_i.y);
       end
     end
   end

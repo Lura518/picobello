@@ -32,7 +32,7 @@ int main() {
     uint32_t mask = 0x000C0000;
 
     // Allocate destination buffer
-    double *buffer_dst = snrt_l1_next_v2();
+    double *buffer_dst = (double*) snrt_l1_next_v2();
     double *buffer_src = buffer_dst + LENGTH;
 
     // Fill the source buffer with the init data

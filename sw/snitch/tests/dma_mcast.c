@@ -31,7 +31,7 @@ int main() {
     uint32_t mask = 0x000C0000;
 
     // Allocate destination buffer
-    uint32_t *buffer_dst = snrt_l1_next_v2();
+    uint32_t *buffer_dst = (uint32_t *) snrt_l1_next_v2();
     uint32_t *buffer_src = buffer_dst + LENGTH;
 
     // Fill the allocated space with wrong data expect for cluster 0
@@ -53,7 +53,7 @@ int main() {
             buffer_src[i] = INITIALIZER;
         }
         // Init the DMA multicast
-        snrt_dma_start_1d_collectiv(buffer_dst, buffer_src, LENGTH * sizeof(uint32_t), (void *) mask, 1 << 4);  // MCast opcode is 6'b01_0000
+        snrt_dma_start_1d_collectiv((uint64_t) buffer_dst, (uint64_t) buffer_src, LENGTH * sizeof(uint32_t), (uint64_t) SNRT_BROADCAST_MASK, 1 << 4);  // MCast opcode is 6'b01_0000
         snrt_dma_wait_all();
     }
 

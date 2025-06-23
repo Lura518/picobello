@@ -9,6 +9,7 @@
 // It works only on the mini_picobello configuration as it is address dependent!
 
 // !!! Needs to be called with simple_offload.spm.elf !!!
+// !!! It works only on the mini_picobello configuration as it is address dependent !!!
 
 // Src Adr Cluster 0: 48'h000020000000
 // Src Adr Cluster 1: 48'h000020040000

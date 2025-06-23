@@ -6,9 +6,9 @@
 //
 // This testbench aims to test the offload reduction feature in the narrow interconnect.
 // The core run an integer add reduction between cluster 0 and cluster 1 with the destination cluster 3
-// It works only on the mini_picobello configuration as it is address dependent!
 
 // !!! Needs to be called with simple_offload.spm.elf !!!
+// !!! It works only on the mini_picobello configuration as it is address dependent !!!
 
 // Src Adr Cluster 0: 48'h000020000000
 // Src Adr Cluster 1: 48'h000020040000

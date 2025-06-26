@@ -40,6 +40,8 @@ module picobello_floo_logger
     input floo_wide_t [Eject:North] floo_wide_out,
     input floo_wide_t [Eject:North] floo_wide_in
 );
+    // Disable the synth for these modules!
+    `ifndef SYNTHESIS
 
     // Type of collective operation
     string op_codes_parallel [16] = {"SelectAW", "CollectB", "LSBAnd", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv", "Inv"};
@@ -209,6 +211,8 @@ module picobello_floo_logger
             end
         end
     end
+    
+    `endif
 endmodule
 
 
@@ -239,6 +243,8 @@ module picobello_offload_logger
     input logic                             offload_resp_valid,
     input logic                             offload_resp_ready
 );
+    // Disable the synth for these modules!
+    `ifndef SYNTHESIS
 
     // Type of collective operation
     string op_codes_offload [16] = {"R_Select", "Inv", "Inv", "Inv", "F_Add", "F_Mul", "F_Min", "F_Max", "A_Add", "A_Mul", "A_Min_S", "A_Max_S", "Inv", "Inv", "A_Min_U", "A_Max_U"};
@@ -279,4 +285,6 @@ module picobello_offload_logger
             end
         end
     end
+
+    `endif
 endmodule

@@ -196,58 +196,61 @@ module cluster_tile
     end
   end
 
-picobello_floo_logger #(
-  .LOG_INPUT_COLL_OPERATION     (1'b1),
-  .LOG_OUTPUT_COLL_OPERATION    (1'b1),
-  .LOG_NARROW_REQUEST           (1'b1),
-  .LOG_NARROW_RESPOND           (1'b1),
-  .LOG_WIDE_REQUEST             (1'b1),
-  .LOG_LOCAL_PORT               (1'b1),
-  .tile_type                    ("Cluster")
-) i_floo_logger (
-  .clk_i                        (clk_i),
-  .id_i                         (id_i),
-  .floo_req_out                 (router_floo_req_out),
-  .floo_req_in                  (router_floo_req_in),
-  .floo_rsp_out                 (router_floo_rsp_out),
-  .floo_rsp_in                  (router_floo_rsp_in),
-  .floo_wide_out                (router_floo_wide_out),
-  .floo_wide_in                 (router_floo_wide_in)
-);
+// Disable the synth for these modules!
+`ifndef SYNTHESIS
+  picobello_floo_logger #(
+    .LOG_INPUT_COLL_OPERATION     (1'b1),
+    .LOG_OUTPUT_COLL_OPERATION    (1'b1),
+    .LOG_NARROW_REQUEST           (1'b1),
+    .LOG_NARROW_RESPOND           (1'b1),
+    .LOG_WIDE_REQUEST             (1'b1),
+    .LOG_LOCAL_PORT               (1'b1),
+    .tile_type                    ("Cluster")
+  ) i_floo_logger (
+    .clk_i                        (clk_i),
+    .id_i                         (id_i),
+    .floo_req_out                 (router_floo_req_out),
+    .floo_req_in                  (router_floo_req_in),
+    .floo_rsp_out                 (router_floo_rsp_out),
+    .floo_rsp_in                  (router_floo_rsp_in),
+    .floo_wide_out                (router_floo_wide_out),
+    .floo_wide_in                 (router_floo_wide_in)
+  );
 
-picobello_offload_logger #(
-  .LOG_OFFLOAD_OPERATION        (1'b1),
-  .DATA_DOUBLE                  (1'b0),
-  .data_t                       (RdDataNarrow_t),
-  .tile_type                    ("Cluster")
-) i_offload_narrow_logger (
-  .clk_i                        (clk_i),
-  .id_i                         (id_i),
-  .offload_req_operands         (offlaod_narrow_req_operand),
-  .offload_req_operation        (offload_narrow_req_operation),
-  .offload_req_valid            (offload_narrow_req_valid),
-  .offload_req_ready            (offload_narrow_req_ready),
-  .offload_resp_result          (offlaod_narrow_resp_data),
-  .offload_resp_valid           (offload_narrow_resp_valid),
-  .offload_resp_ready           (offload_narrow_resp_ready)
-);
+  picobello_offload_logger #(
+    .LOG_OFFLOAD_OPERATION        (1'b1),
+    .DATA_DOUBLE                  (1'b0),
+    .data_t                       (RdDataNarrow_t),
+    .tile_type                    ("Cluster")
+  ) i_offload_narrow_logger (
+    .clk_i                        (clk_i),
+    .id_i                         (id_i),
+    .offload_req_operands         (offlaod_narrow_req_operand),
+    .offload_req_operation        (offload_narrow_req_operation),
+    .offload_req_valid            (offload_narrow_req_valid),
+    .offload_req_ready            (offload_narrow_req_ready),
+    .offload_resp_result          (offlaod_narrow_resp_data),
+    .offload_resp_valid           (offload_narrow_resp_valid),
+    .offload_resp_ready           (offload_narrow_resp_ready)
+  );
 
-picobello_offload_logger #(
-  .LOG_OFFLOAD_OPERATION        (1'b1),
-  .DATA_DOUBLE                  (1'b1),
-  .data_t                       (RdDataWide_t),
-  .tile_type                    ("Cluster")
-) i_offload_wide_logger (
-  .clk_i                        (clk_i),
-  .id_i                         (id_i),
-  .offload_req_operands         (offlaod_wide_req_operand),
-  .offload_req_operation        (offload_wide_req_operation),
-  .offload_req_valid            (offload_wide_req_valid),
-  .offload_req_ready            (offload_wide_req_ready),
-  .offload_resp_result          (offlaod_wide_resp_data),
-  .offload_resp_valid           (offload_wide_resp_valid),
-  .offload_resp_ready           (offload_wide_resp_ready)
-);
+  picobello_offload_logger #(
+    .LOG_OFFLOAD_OPERATION        (1'b1),
+    .DATA_DOUBLE                  (1'b1),
+    .data_t                       (RdDataWide_t),
+    .tile_type                    ("Cluster")
+  ) i_offload_wide_logger (
+    .clk_i                        (clk_i),
+    .id_i                         (id_i),
+    .offload_req_operands         (offlaod_wide_req_operand),
+    .offload_req_operation        (offload_wide_req_operation),
+    .offload_req_valid            (offload_wide_req_valid),
+    .offload_req_ready            (offload_wide_req_ready),
+    .offload_resp_result          (offlaod_wide_resp_data),
+    .offload_resp_valid           (offload_wide_resp_valid),
+    .offload_resp_ready           (offload_wide_resp_ready)
+  );
+`endif
 
   ////////////
   // Router //

@@ -31,7 +31,7 @@ int main (void){
 	uint32_t mask = 0x00040000;
 
 	// Determint an end address in the adr range of the 3rd cluster
-	uintptr_t addr = 0x0000200c0100;
+	uintptr_t addr = 0x0000200c0200;
 
 	// Set a default value for the target address
 	if((core_id == 0) && (cluster_id == 3)){

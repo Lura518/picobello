@@ -26,12 +26,13 @@ int main (void){
     // Get core id
     uint32_t core_id = snrt_cluster_core_idx();
 	uint32_t cluster_id = snrt_cluster_idx();
+	uint32_t offset = 2;
 
 	// Generate the mask (take the difference in the start address should be sufficient)
 	uint32_t mask = SNRT_BROADCAST_MASK;
 
 	// Determint an end address in the adr range of the 0th cluster
-	uintptr_t addr = 0x000020000100;
+	uintptr_t addr = 0x000020000200;
 
 	// Set a default value for the target address
 	if((core_id == 0) && (cluster_id == 0)){
@@ -44,7 +45,7 @@ int main (void){
 	// We only want to work with core 0's
     if(core_id == 0){
 		snrt_enable_reduction(mask, 6);				// Enable Integer Add reduction
-		*((uint32_t *) addr) = cluster_id + 2;
+		*((uint32_t *) addr) = cluster_id + offset;		// When changing the 2 then change the end rsult too!
 		snrt_disable_reduction();
 	}
 
@@ -53,7 +54,7 @@ int main (void){
 
 	// Sanity check - Core 0 from Cluster 0 should read 14 from the addr!
 	if((core_id == 0) && (cluster_id == 0)){
-		if(*((uint32_t *) addr) == 14){
+		if(*((uint32_t *) addr) == (snrt_cluster_num() * offset) + (((snrt_cluster_num()-1) * ((snrt_cluster_num()-1) + 1)) >> 1)){
 			return 0;
 		} else {
 			return 1;

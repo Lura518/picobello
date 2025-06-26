@@ -31,7 +31,7 @@ int main (void){
 	uint32_t mask = SNRT_BROADCAST_MASK;
 
 	// Determint an end address in the adr range of the 3rd cluster
-	uintptr_t addr = 0x000020080100;
+	uintptr_t addr = 0x000020080200;
 
 	// Set a default value for the target address
 	if((core_id == 0) && (cluster_id == 2)){

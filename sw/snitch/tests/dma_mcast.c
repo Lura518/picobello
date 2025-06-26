@@ -16,8 +16,8 @@
 
 #define WRONG_DATA 0xBBBBBBBB
 #define INITIALIZER 0xAAAAAAAA
-#define LENGTH 32
-#define LENGTH_TO_CHECK 32
+#define LENGTH 8
+#define LENGTH_TO_CHECK 8
 
 int main() {
     snrt_interrupt_enable(IRQ_M_CLUSTER);

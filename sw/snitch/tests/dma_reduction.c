@@ -13,7 +13,7 @@
 #include "picobello_addrmap.h"
 #include "snrt.h"
 
-#define LENGTH 8
+#define LENGTH 256
 #define LENGTH_TO_CHECK (LENGTH)
 
 int main() {
@@ -21,8 +21,7 @@ int main() {
     //snrt_int_clr_mcip();
 
     // Set default values
-    double init_data = 15.0;
-    double final_data = init_data + init_data + init_data + init_data;    // Currently just add data so we ahve the same op as we want to run on the FPU
+    double init_data = 15.0 + (double) snrt_cluster_idx();
 
     // Get core id
     uint32_t core_id = snrt_cluster_core_idx();
@@ -38,16 +37,16 @@ int main() {
     // Fill the source buffer with the init data
     if (snrt_is_dm_core()) {
         for (uint32_t i = 0; i < LENGTH; i++) {
-            buffer_src[i] = init_data;
+            buffer_src[i] = init_data + (double) i;
         }
     }
 
     // Wait until the cluster are finished (Guard dma call aginst the one in the startup script)
     snrt_global_barrier();
-
-        // Init the DMA multicast
+    
+    // Init the DMA multicast
     if (snrt_is_dm_core()) {
-        snrt_dma_start_1d_collectiv(snrt_remote_l1_ptr(buffer_dst, cluster_id, 0), buffer_src, LENGTH * sizeof(double), (void *) mask, 52);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
+        snrt_dma_start_1d_collectiv(snrt_remote_l1_ptr(buffer_dst, cluster_id, 3), buffer_src, LENGTH * sizeof(double), (void *) mask, 52);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
         snrt_dma_wait_all();
     }
 
@@ -55,10 +54,14 @@ int main() {
     snrt_global_barrier();
 
     // Cluster 0 checks if the data in its buffer are correct
-    if (snrt_is_dm_core() && (cluster_id == 0)) {
+    if (snrt_is_dm_core() && (cluster_id == 15)) {
         uint32_t n_errs = LENGTH_TO_CHECK;
+        double base_value = (snrt_cluster_num()*15.0) + (double) (((snrt_cluster_num()-1) * ((snrt_cluster_num()-1) + 1)) >> 1);
         for (uint32_t i = 0; i < LENGTH_TO_CHECK; i++) {
-            if (buffer_dst[i] == final_data) n_errs--;
+            if (buffer_dst[i] == base_value){
+                n_errs--;
+            }
+            base_value = base_value + (double) snrt_cluster_num();
         }
         return n_errs;
     } else {

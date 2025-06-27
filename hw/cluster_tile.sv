@@ -47,9 +47,15 @@ module cluster_tile
   logic                                 offload_dca_req_valid;
   logic                                 offload_dca_req_ready;
   snitch_cluster_pkg::dca_router_req_t  offload_dca_req_data;
+  logic                                 offload_dca_req_valid_q;
+  logic                                 offload_dca_req_ready_q;
+  snitch_cluster_pkg::dca_router_req_t  offload_dca_req_data_q;
   logic                                 offload_dca_resp_valid;
   logic                                 offload_dca_resp_ready;
   snitch_cluster_pkg::dca_router_resp_t offload_dca_resp_data;
+  logic                                 offload_dca_resp_valid_q;
+  logic                                 offload_dca_resp_ready_q;
+  snitch_cluster_pkg::dca_router_resp_t offload_dca_resp_data_q;
 
   // Vars to connect the NW router to the wide parser
   RdDataWide_t [1:0]                    offlaod_wide_req_operand;
@@ -117,10 +123,42 @@ module cluster_tile
       endcase
     end
 
+    // Insert a req-cut to avoid timing violations
+    spill_register #(
+      .T              (snitch_cluster_pkg::dca_router_req_t),
+      .Bypass         (1'b0)
+    ) i_cut_dca_req (
+      .clk_i          (clk_i),
+      .rst_ni         (rst_ni),
+      .valid_i        (offload_dca_req_valid),
+      .ready_o        (offload_dca_req_ready),
+      .data_i         (offload_dca_req_data),
+      .valid_o        (offload_dca_req_valid_q),
+      .ready_i        (offload_dca_req_ready_q),
+      .data_o         (offload_dca_req_data_q)
+    );
+
+    // Insert a resp-cut to avoid timing violations
+    spill_register #(
+      .T              (snitch_cluster_pkg::dca_router_resp_t),
+      .Bypass         (1'b0)
+    ) i_cut_dca_resp (
+      .clk_i          (clk_i),
+      .rst_ni         (rst_ni),
+      .valid_i        (offload_dca_resp_valid),
+      .ready_o        (offload_dca_resp_ready),
+      .data_i         (offload_dca_resp_data),
+      .valid_o        (offload_dca_resp_valid_q),
+      .ready_i        (offload_dca_resp_ready_q),
+      .data_o         (offload_dca_resp_data_q)
+    );
+
     // Connect the Response
-    assign offload_wide_resp_valid = offload_dca_resp_valid;
-    assign offload_dca_resp_ready = offload_wide_resp_ready;
-    assign offlaod_wide_resp_data = offload_dca_resp_data.dca_result;
+    assign offload_wide_resp_valid = offload_dca_resp_valid_q;
+    assign offload_dca_resp_ready_q = offload_wide_resp_ready;
+    assign offlaod_wide_resp_data = offload_dca_resp_data_q.dca_result;
+
+
   // No Wide Reduction supported
   end else begin : gen_no_wide_reduction
     assign offload_dca_req_valid = '0;
@@ -149,8 +187,7 @@ module cluster_tile
   // Instanciate an ALU to calculate the result on the Narrow Offload Port
   if(EnNarrowOffloadReduction) begin : gen_narrow_offload_reduction
     floo_reduction_alu #(
-      .ID                   (0),
-      .DEBUG_PRINT_TRACE    (1'b0)
+      .ID                   (0)
     ) i_alu (
       .clk_i                (clk_i),
       .rst_ni               (rst_ni),
@@ -279,7 +316,7 @@ floo_nw_router #(
     .RdNarrowData_t           (RdDataNarrow_t),
     .RdFifoFallThrough        (1'b1),
     .RdFifoDepth              (3),
-    .RdPipelineDepth          (3),  // TODO (raroth): Pipeline Depth is dependent on Wide (3) / Narrow (1)
+    .RdPipelineDepth          (5),  // TODO (raroth): Pipeline Depth is dependent on Wide (3) / Narrow (1)
     .RdControllerComplex      (2),
     .RdPartialBufferSize      (3),
     .RdTagBits                (5),
@@ -417,9 +454,9 @@ floo_nw_router #(
     .wide_out_resp_i      (cluster_wide_out_rsp),
     .wide_in_req_i        (cluster_wide_in_req),
     .wide_in_resp_o       (cluster_wide_in_rsp),
-    .dca_8x_req_i         (offload_dca_req_data),
-    .dca_8x_req_valid_i   (offload_dca_req_valid),
-    .dca_8x_req_ready_o   (offload_dca_req_ready),
+    .dca_8x_req_i         (offload_dca_req_data_q),
+    .dca_8x_req_valid_i   (offload_dca_req_valid_q),
+    .dca_8x_req_ready_o   (offload_dca_req_ready_q),
     .dca_8x_resp_o        (offload_dca_resp_data),
     .dca_8x_resp_valid_o  (offload_dca_resp_valid),
     .dca_8x_resp_ready_i  (offload_dca_resp_ready)

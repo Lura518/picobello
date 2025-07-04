@@ -13,8 +13,9 @@
 #include "picobello_addrmap.h"
 #include "snrt.h"
 
-#define LENGTH 256
+#define LENGTH 512
 #define LENGTH_TO_CHECK (LENGTH)
+#define TARGET_CLUSTER 1
 
 int main() {
     snrt_interrupt_enable(IRQ_M_CLUSTER);
@@ -46,7 +47,7 @@ int main() {
     
     // Init the DMA multicast
     if (snrt_is_dm_core()) {
-        snrt_dma_start_1d_collectiv(snrt_remote_l1_ptr(buffer_dst, cluster_id, 3), buffer_src, LENGTH * sizeof(double), (void *) mask, 52);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
+        snrt_dma_start_1d_collectiv(snrt_remote_l1_ptr(buffer_dst, cluster_id, TARGET_CLUSTER), buffer_src, LENGTH * sizeof(double), (void *) mask, 52);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
         snrt_dma_wait_all();
     }
 
@@ -54,7 +55,7 @@ int main() {
     snrt_global_barrier();
 
     // Cluster 0 checks if the data in its buffer are correct
-    if (snrt_is_dm_core() && (cluster_id == 15)) {
+    if (snrt_is_dm_core() && (cluster_id == TARGET_CLUSTER)) {
         uint32_t n_errs = LENGTH_TO_CHECK;
         double base_value = (snrt_cluster_num()*15.0) + (double) (((snrt_cluster_num()-1) * ((snrt_cluster_num()-1) + 1)) >> 1);
         for (uint32_t i = 0; i < LENGTH_TO_CHECK; i++) {

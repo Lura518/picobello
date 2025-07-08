@@ -43,6 +43,9 @@ pb-sn-tests: $(PB_SNRT_TEST_ELFS) $(PB_SNRT_TEST_DUMP)
 clean-pb-sn-tests:
 	rm -rf $(PB_SNRT_TEST_ELFS)
 
+# Allows to define "Define" from the outside
+SNRT_TESTS_RISCV_CFLAGS += $(EXTRA_CFLAGS)
+
 $(PB_SNRT_TESTS_BUILDDIR)/%.d: $(PB_SNRT_TESTS_DIR)/%.c | $(PB_SNRT_TESTS_BUILDDIR)
 	$(RISCV_CXX) $(SNRT_TESTS_RISCV_CFLAGS) -MM -MT '$(@:.d=.elf)' -x c++ $< > $@
 

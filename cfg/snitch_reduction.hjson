@@ -45,9 +45,9 @@
         // To support 512-Bit FPU reduction use the Direct Compute Acces (DCA)
         enable_dca: true,
         // To support the multicast for the DMA
-        enable_DMA_multicast: true,
+        enable_dma_multicast: true,
         // Currently we need to reroute collectiv operation to the SoC IF independent of the dst address
-        enable_reroute_collectiv: true,
+        enable_reroute_collective: true,
         // Timing parameters
         timing: {
             lat_comp_fp32: 2,

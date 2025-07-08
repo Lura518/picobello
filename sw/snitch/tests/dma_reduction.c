@@ -13,9 +13,16 @@
 #include "picobello_addrmap.h"
 #include "snrt.h"
 
-#define LENGTH 512
-#define LENGTH_TO_CHECK (LENGTH)
-#define TARGET_CLUSTER 1
+#ifndef TARGET_CLUSTER
+#define TARGET_CLUSTER                  0
+#endif
+
+#ifndef DATA_LENGTH
+#define DATA_LENGTH                     64
+#endif
+
+#define LENGTH_TO_CHECK (DATA_LENGTH)
+
 
 int main() {
     snrt_interrupt_enable(IRQ_M_CLUSTER);
@@ -33,11 +40,11 @@ int main() {
 
     // Allocate destination buffer
     double *buffer_dst = (double*) snrt_l1_next_v2();
-    double *buffer_src = buffer_dst + LENGTH;
+    double *buffer_src = buffer_dst + DATA_LENGTH;
 
     // Fill the source buffer with the init data
     if (snrt_is_dm_core()) {
-        for (uint32_t i = 0; i < LENGTH; i++) {
+        for (uint32_t i = 0; i < DATA_LENGTH; i++) {
             buffer_src[i] = init_data + (double) i;
         }
     }
@@ -47,7 +54,7 @@ int main() {
     
     // Init the DMA multicast
     if (snrt_is_dm_core()) {
-        snrt_dma_start_1d_collectiv(snrt_remote_l1_ptr(buffer_dst, cluster_id, TARGET_CLUSTER), buffer_src, LENGTH * sizeof(double), (void *) mask, 52);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
+        snrt_dma_start_1d_collective(snrt_remote_l1_ptr(buffer_dst, cluster_id, TARGET_CLUSTER), buffer_src, DATA_LENGTH * sizeof(double), (void *) mask, SNRT_COLL_WIDE_FPADD);  // MCast opcode is 6'b01_0000 / FP ADD is 6'b11_0100
         snrt_dma_wait_all();
     }
 

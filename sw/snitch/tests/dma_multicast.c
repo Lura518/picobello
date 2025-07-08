@@ -31,7 +31,7 @@
 
 static inline void dma_broadcast_to_clusters(void* dst, void* src, size_t size) {
     if (snrt_is_dm_core() && (snrt_cluster_idx() == 0)) {
-        snrt_dma_start_1d_collectiv((uint64_t) snrt_remote_l1_ptr(dst, 0, 1), (uint64_t) src, size, (uint64_t) BCAST_MASK_ACTIVE, (1<<4));
+        snrt_dma_start_1d_collective((uint64_t) snrt_remote_l1_ptr(dst, 0, 1), (uint64_t) src, size, (uint64_t) BCAST_MASK_ACTIVE, SNRT_COLL_MULTICAST);
         snrt_dma_wait_all();
     }
 }

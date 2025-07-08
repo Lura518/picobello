@@ -53,7 +53,7 @@ int main() {
             buffer_src[i] = INITIALIZER;
         }
         // Init the DMA multicast
-        snrt_dma_start_1d_collectiv((uint64_t) buffer_dst, (uint64_t) buffer_src, LENGTH * sizeof(uint32_t), (uint64_t) SNRT_BROADCAST_MASK, 1 << 4);  // MCast opcode is 6'b01_0000
+        snrt_dma_start_1d_collective((uint64_t) buffer_dst, (uint64_t) buffer_src, LENGTH * sizeof(uint32_t), (uint64_t) SNRT_BROADCAST_MASK, SNRT_COLL_MULTICAST);  // MCast opcode is 6'b01_0000
         snrt_dma_wait_all();
     }
 

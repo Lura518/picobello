@@ -87,7 +87,6 @@ int main (void){
 
 	// Determint an end address for all tests
 	// Give it in the scope of the 0th cluster!
-	// DO NOT USE the address 0x20001000! Substitute for the cls malfunction
 	// Set all Addresses with an default value
 #ifdef TARGET_INT_ADD_1
 	void * addr_int_add_1 		= snrt_remote_l1_ptr((void*) 0x20000200, 0, TARGET_INT_ADD_1);
@@ -132,7 +131,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = 3 + cluster_id;
-	cluster_reduction(addr_int_add_1, local_contribution, mask, 6) ;
+	cluster_reduction(addr_int_add_1, local_contribution, mask, SNRT_COLL_NARROW_ADD) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -152,7 +151,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = (uint32_t) (1 - cluster_id);	// Neg. value but cast into uint32_t
-	cluster_reduction(addr_int_add_2, local_contribution, mask, 6) ;
+	cluster_reduction(addr_int_add_2, local_contribution, mask, SNRT_COLL_NARROW_ADD) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -172,7 +171,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = 1 + (cluster_id % 4);
-	cluster_reduction(addr_int_mul_1, local_contribution, mask, 7) ;
+	cluster_reduction(addr_int_mul_1, local_contribution, mask, SNRT_COLL_NARROW_MUL) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -195,7 +194,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = (uint32_t) (- 1 - (cluster_id % 4));
-	cluster_reduction(addr_int_mul_2, local_contribution, mask, 7) ;
+	cluster_reduction(addr_int_mul_2, local_contribution, mask, SNRT_COLL_NARROW_MUL) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -219,7 +218,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = 2*cluster_id;
-	cluster_reduction(addr_unsigned_max, local_contribution, mask, 11) ;
+	cluster_reduction(addr_unsigned_max, local_contribution, mask, SNRT_COLL_NARROW_MAX_UINT) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -239,7 +238,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = -100 + cluster_id;
-	cluster_reduction(addr_signed_max, local_contribution, mask, 10) ;
+	cluster_reduction(addr_signed_max, local_contribution, mask, SNRT_COLL_NARROW_MAX_INT) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -254,7 +253,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = -2 + cluster_id;
-	cluster_reduction(addr_signed_max, local_contribution, mask, 10) ;
+	cluster_reduction(addr_signed_max, local_contribution, mask, SNRT_COLL_NARROW_MAX_INT) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -274,7 +273,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = 42 + cluster_id;
-	cluster_reduction(addr_unsigned_min, local_contribution, mask, 9) ;
+	cluster_reduction(addr_unsigned_min, local_contribution, mask, SNRT_COLL_NARROW_MIN_UINT) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -294,7 +293,7 @@ int main (void){
 
 	// Determint the local contribution and start the reduction
 	local_contribution = - 42 + cluster_id;
-	cluster_reduction(addr_signed_min, local_contribution, mask, 8) ;
+	cluster_reduction(addr_signed_min, local_contribution, mask, SNRT_COLL_NARROW_MIN_INT) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();
@@ -309,7 +308,7 @@ int main (void){
 	// Also Check if the reduction data "crosses" the 0!
 	// Determint the local contribution and start the reduction
 	local_contribution = - 2 + cluster_id;
-	cluster_reduction(addr_signed_min, local_contribution, mask, 8) ;
+	cluster_reduction(addr_signed_min, local_contribution, mask, SNRT_COLL_NARROW_MIN_INT) ;
 
 	// Sync up all cores across cluster
 	snrt_global_barrier();

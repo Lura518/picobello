@@ -41,17 +41,21 @@ module fhg_spu_tile
   floo_wide_t [Eject:North] router_floo_wide_out, router_floo_wide_in;
 
   floo_nw_router #(
-    .AxiCfgN     (AxiCfgN),
-    .AxiCfgW     (AxiCfgW),
-    .RouteAlgo   (RouteCfg.RouteAlgo),
-    .NumRoutes   (5),
-    .InFifoDepth (2),
-    .OutFifoDepth(2),
-    .id_t        (id_t),
-    .hdr_t       (hdr_t),
-    .floo_req_t  (floo_req_t),
-    .floo_rsp_t  (floo_rsp_t),
-    .floo_wide_t (floo_wide_t)
+    .AxiCfgN                  (AxiCfgN),
+    .AxiCfgW                  (AxiCfgW),
+    .RouteAlgo                (RouteCfg.RouteAlgo),
+    .NumRoutes                (5),
+    .InFifoDepth              (2),
+    .OutFifoDepth             (2),
+    .InFifoDepthReduction     (2),
+    .OutFifoDepthReduction    (2),
+    .EnCollWideVirtChannel    (1'b1),
+    .EnCollNarrowVirtChannel  (1'b0),
+    .id_t                     (id_t),
+    .hdr_t                    (hdr_t),
+    .floo_req_t               (floo_req_t),
+    .floo_rsp_t               (floo_rsp_t),
+    .floo_wide_t              (floo_wide_t)
   ) i_router (
     .clk_i,
     .rst_ni,

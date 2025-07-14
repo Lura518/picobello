@@ -96,6 +96,8 @@ module cheshire_tile
     .NumRoutes                      (5),
     .InFifoDepth                    (2),
     .OutFifoDepth                   (2),
+    .InFifoDepthReduction           (2),
+    .OutFifoDepthReduction          (2),
     .id_t                           (id_t),
     .hdr_t                          (hdr_t),
     .floo_req_t                     (floo_req_t),
@@ -104,7 +106,9 @@ module cheshire_tile
     .EnMultiCast                    (1'b0),
     .EnParallelReduction            (1'b0),
     .EnOffloadWideReduction         (1'b0),
-    .EnOffloadNarrowReduction       (1'b0)
+    .EnOffloadNarrowReduction       (1'b0),
+    .EnCollWideVirtChannel          (1'b1),
+    .EnCollNarrowVirtChannel        (1'b0)
   ) i_router (
     .clk_i,
     .rst_ni,
@@ -170,6 +174,8 @@ module cheshire_tile
     .EnNarrowCollectiveOperation      (1'b0),
     .EnBRespNarrowCollectiveOperation (1'b1),
     .EnBRespWideCollectiveOperation   (1'b1),
+    .EnCollWideVirtChannel            (1'b1),
+    .EnCollNarrowVirtChannel          (1'b0),
     .Sam                              (Sam),
     .id_t                             (id_t),
     .rob_idx_t                        (rob_idx_t),

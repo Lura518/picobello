@@ -166,7 +166,7 @@ packages:
       Path: .deps/fhg_spu_cluster
     dependencies: []
   floo_noc:
-    revision: 4a7f9a12e58575a1dee59e705454cdbb6f1bdad5
+    revision: 2fcf72e5fa908dae77560a3be8319d8f781632b0
     version: null
     source:
       Git: https://github.com/Lura518/FlooNoC.git

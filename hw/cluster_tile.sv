@@ -283,12 +283,13 @@ module cluster_tile
 // Disable the synth for these modules!
 `ifndef SYNTHESIS
   picobello_floo_logger #(
-    .LOG_INPUT_COLL_OPERATION     (1'b1),
+    .LOG_INPUT_COLL_OPERATION     (1'b0),
     .LOG_OUTPUT_COLL_OPERATION    (1'b1),
     .LOG_NARROW_REQUEST           (1'b1),
     .LOG_NARROW_RESPOND           (1'b1),
     .LOG_WIDE_REQUEST             (1'b1),
     .LOG_LOCAL_PORT               (1'b1),
+    .LOG_VIRTUAL_WIDE             (1'b1),
     .tile_type                    ("Cluster")
   ) i_floo_logger (
     .clk_i                        (clk_i),
@@ -481,11 +482,15 @@ floo_nw_router #(
     .NumRoutes                (5),
     .InFifoDepth              (2),
     .OutFifoDepth             (2),
+    .InFifoDepthReduction     (2),
+    .OutFifoDepthReduction    (2),
     .NoLoopback               (1'b0),
     .EnMultiCast              (RouteCfg.EnMultiCast),
     .EnParallelReduction      (EnParallelReduction),
     .EnOffloadWideReduction   (EnWideOffloadReduction),
     .EnOffloadNarrowReduction (EnNarrowOffloadReduction),
+    .EnCollWideVirtChannel    (1'b1),
+    .EnCollNarrowVirtChannel  (1'b0),
     .id_t                     (id_t),
     .hdr_t                    (hdr_t),
     .floo_req_t               (floo_req_t),
@@ -553,6 +558,8 @@ floo_nw_router #(
     .EnNarrowCollectiveOperation  (EnParallelReduction | EnNarrowOffloadReduction),
     .EnMaskingWideCollectivOperation    (1'b1),
     .EnMaskingNarrowCollectivOperation  (1'b1),
+    .EnCollWideVirtChannel        (1'b1),
+    .EnCollNarrowVirtChannel      (1'b0),
     .id_t                         (floo_picobello_noc_pkg::id_t),
     .rob_idx_t                    (floo_picobello_noc_pkg::rob_idx_t),
     .hdr_t                        (floo_picobello_noc_pkg::hdr_t),

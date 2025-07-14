@@ -12,6 +12,7 @@ routing:
   en_multicast: true
   en_parallel_reduction: true
   en_narrow_offload_reduction: true
+  en_wide_offload_reduction: true
 
 protocols:
   - name: "narrow_in"
@@ -34,14 +35,14 @@ protocols:
     data_width: 512
     addr_width: 48
     id_width: 3
-    user_width: 1
+    user_width: 54
   - name: "wide_out"
     type: "wide"
     protocol: "AXI4"
     data_width: 512
     addr_width: 48
     id_width: 1
-    user_width: 1
+    user_width: 54
 
 endpoints:
   - name: "cluster"

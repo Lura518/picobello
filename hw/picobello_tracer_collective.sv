@@ -26,7 +26,11 @@ module picobello_floo_logger
     parameter bit LOG_WIDE_REQUEST          = 1'b0,
     // Log the local port
     parameter bit LOG_LOCAL_PORT            = 1'b0,
-    // Nam of the tile
+    // Support virtual channel for wide link
+    parameter bit LOG_VIRTUAL_WIDE          = 1'b0,
+    // Support virtual channel for narrow link
+    parameter bit LOG_VIRTUAL_NARROW        = 1'b0,
+    // Name of the tile
     parameter string tile_type              = "Test"
 ) (
     input logic clk_i,
@@ -72,13 +76,24 @@ module picobello_floo_logger
                 // Narrow request
                 for(int out = North; out < end_loop;out++) begin
                     if(LOG_NARROW_REQUEST) begin
-                        if((floo_req_in[out].valid) && (floo_req_out[out].ready)) begin
-                            unique case(floo_req_in[out].req.generic.hdr.commtype)
-                                Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
-                                ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_req_in[out].req.generic.hdr.reduction_op],"] "};
-                                OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_req_in[out].req.generic.hdr.reduction_op],"] "};
-                                default:;
-                            endcase
+                        if(LOG_VIRTUAL_NARROW == 1'b0) begin
+                            if((floo_req_in[out].valid) && (floo_req_out[out].ready)) begin
+                                unique case(floo_req_in[out].req.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_req_in[out].req.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_req_in[out].req.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
+                        end else begin
+                            if((floo_req_in[out].valid[1]) && (floo_req_out[out].ready[1])) begin
+                                unique case(floo_req_in[out].req.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_req_in[out].req.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_req_in[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_req_in[out].req.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
                         end
                     end
                 end
@@ -112,13 +127,24 @@ module picobello_floo_logger
                 // Wide request
                 for(int out = North; out < end_loop;out++) begin
                     if(LOG_WIDE_REQUEST) begin
-                        if((floo_wide_in[out].valid) && (floo_wide_out[out].ready)) begin
-                            unique case(floo_wide_in[out].wide.generic.hdr.commtype)
-                                Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
-                                ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_wide_in[out].wide.generic.hdr.reduction_op],"] "};
-                                OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_wide_in[out].wide.generic.hdr.reduction_op],"] "};
-                                default:;
-                            endcase
+                        if(LOG_VIRTUAL_WIDE == 1'b0) begin
+                            if((floo_wide_in[out].valid) && (floo_wide_out[out].ready)) begin
+                                unique case(floo_wide_in[out].wide.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_wide_in[out].wide.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_wide_in[out].wide.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
+                        end else begin
+                            if((floo_wide_in[out].valid[1]) && (floo_wide_out[out].ready[1])) begin
+                                unique case(floo_wide_in[out].wide.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_wide_in[out].wide.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_wide_in[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_wide_in[out].wide.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
                         end
                     end
                 end
@@ -142,13 +168,24 @@ module picobello_floo_logger
                 // Narrow request
                 for(int out = North; out < end_loop;out++) begin
                     if(LOG_NARROW_REQUEST) begin
-                        if((floo_req_out[out].valid) && (floo_req_in[out].ready)) begin
-                            unique case(floo_req_out[out].req.generic.hdr.commtype)
-                                Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
-                                ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_req_out[out].req.generic.hdr.reduction_op],"] "};
-                                OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_req_out[out].req.generic.hdr.reduction_op],"] "};
-                                default:;
-                            endcase
+                        if(LOG_VIRTUAL_NARROW == 1'b0) begin
+                            if((floo_req_out[out].valid) && (floo_req_in[out].ready)) begin
+                                unique case(floo_req_out[out].req.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_req_out[out].req.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_req_out[out].req.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
+                        end else begin
+                            if((floo_req_out[out].valid[1]) && (floo_req_in[out].ready[1])) begin
+                                unique case(floo_req_out[out].req.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_req_out[out].req.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_req_out[out].req.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_req_out[out].req.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
                         end
                     end
                 end
@@ -182,13 +219,24 @@ module picobello_floo_logger
                 // Wide request
                 for(int out = North; out < end_loop;out++) begin
                     if(LOG_WIDE_REQUEST) begin
-                        if((floo_wide_out[out].valid) && (floo_wide_in[out].ready)) begin
-                            unique case(floo_wide_out[out].wide.generic.hdr.commtype)
-                                Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
-                                ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_wide_out[out].wide.generic.hdr.reduction_op],"] "};
-                                OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_wide_out[out].wide.generic.hdr.reduction_op],"] "};
-                                default:;
-                            endcase
+                        if(LOG_VIRTUAL_WIDE == 1'b0) begin
+                            if((floo_wide_out[out].valid) && (floo_wide_in[out].ready)) begin
+                                unique case(floo_wide_out[out].wide.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_wide_out[out].wide.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_wide_out[out].wide.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
+                        end else begin
+                            if((floo_wide_out[out].valid[1]) && (floo_wide_in[out].ready[1])) begin
+                                unique case(floo_wide_out[out].wide.generic.hdr.commtype)
+                                    Multicast : temp_message = {temp_message, "(MC) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] "};
+                                    ParallelReduction : temp_message = {temp_message, "(PR) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_parallel[floo_wide_out[out].wide.generic.hdr.reduction_op],"] "};
+                                    OffloadReduction : temp_message = {temp_message, "(OR) Type ",flit_Type[floo_wide_out[out].wide.generic.hdr.axi_ch] , " Dir [", directions[out],"] OP [",op_codes_offload[floo_wide_out[out].wide.generic.hdr.reduction_op],"] "};
+                                    default:;
+                                endcase
+                            end
                         end
                     end
                 end

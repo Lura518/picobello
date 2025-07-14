@@ -23,7 +23,7 @@
         zero_mem_size: 60, // kB
         ext_mem_size: 4, //kB
         dma_data_width: 512,
-        dma_user_width: 1, // addr_width + collectiv_width (only if wide collective enabled)
+        dma_user_width: 54, // addr_width + collectiv_width (only if wide collective enabled)
         // TODO(fischeti): Check with Thomas
         dma_axi_req_fifo_depth: 24,
         dma_req_fifo_depth: 8,
@@ -48,7 +48,7 @@
         // To support 512-Bit FPU reduction use the Direct Compute Acces (DCA)
         enable_dca: true,
         // To support the collectives for the DMA
-        enable_wide_collectives: false,
+        enable_wide_collectives: true,
         // Timing parameters
         timing: {
             lat_comp_fp32: 2,

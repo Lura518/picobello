@@ -412,6 +412,40 @@ package picobello_pkg;
     floo_pkg::reduction_op_e        coll_op;
   } reduction_wide_user_t;
 
+  // Configurations for the Reductions
+  // Stupid asolution which allows me to overwrite the Reduction confiuration without endagering everything
+  // raroth - overwrite benchmark autotest - start
+localparam reduction_cfg_t WideReductionCfg = '{
+    RdControllConf: ControllerGeneric,
+    RdFifoFallThrough: 1'b1,
+    RdFifoDepth: 2,
+    RdPipelineDepth: 5,
+    RdPartialBufferSize: 3,
+    RdTagBits: 5,
+    RdSupportAxi: 1'b1,
+    RdEnableBypass: 1'b1,
+    RdSupportLoopback: 1'b1
+  };
+  // raroth - overwrite benchmark autotest - end
+
+localparam reduction_cfg_t NarrowReductionCfg = '{
+    RdControllConf: ControllerGeneric,
+    RdFifoFallThrough: 1'b1,
+    RdFifoDepth: 2,
+    RdPipelineDepth: 5,
+    RdPartialBufferSize: 3,
+    RdTagBits: 5,
+    RdSupportAxi: 1'b1,
+    RdEnableBypass: 1'b1,
+    RdSupportLoopback: 1'b1
+  };
+
+localparam reduction_cfg_t ResponseReductionCfg = '{
+    RdEnableBypass: 1'b1,
+    RdSupportLoopback: 1'b1,
+    default: '0
+  };
+
   ////////////////
   //  Cheshire  //
   ////////////////

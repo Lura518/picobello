@@ -186,9 +186,7 @@ module cluster_tile
 
   // Instanciate an ALU to calculate the result on the Narrow Offload Port
   if(EnNarrowOffloadReduction) begin : gen_narrow_offload_reduction
-    floo_reduction_alu #(
-      .ID                   (0)
-    ) i_alu (
+    floo_reduction_alu #() i_alu (
       .clk_i                (clk_i),
       .rst_ni               (rst_ni),
       .flush_i              (1'b0),
@@ -314,14 +312,9 @@ floo_nw_router #(
     .RdNarrowOperation_t      (reduction_offload_op_e),
     .RdWideData_t             (RdDataWide_t),
     .RdNarrowData_t           (RdDataNarrow_t),
-    .RdFifoFallThrough        (1'b1),
-    .RdFifoDepth              (3),
-    .RdPipelineDepth          (5),  // TODO (raroth): Pipeline Depth is dependent on Wide (3) / Narrow (1)
-    .RdControllerComplex      (2),
-    .RdPartialBufferSize      (3),
-    .RdTagBits                (5),
-    .RdSupportAxi             (1'b1),
-    .RdSupportLoopback        (1'b1)
+    .RdWideCfg                (WideReductionCfg),
+    .RdNarrowCfg              (NarrowReductionCfg),
+    .RdRespCfg                (ResponseReductionCfg)
 ) i_router (
     .clk_i,
     .rst_ni,

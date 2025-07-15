@@ -1,0 +1,78 @@
+// Copyright 2023 ETH Zurich and University of Bologna.
+// Licensed under the Apache License, Version 2.0, see LICENSE for details.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Raphael Roth <raroth@student.ethz.ch>
+//
+// This code tests the reduction feature of the wide interconnect.
+// It uses the DMA to reduce an array of double data together.
+
+// !!! Needs to be called with simple_offload.spm.elf !!!
+
+#include <stdint.h>
+#include "pb_addrmap.h"
+#include "snrt.h"
+
+#ifndef TARGET_CLUSTER
+#define TARGET_CLUSTER                  0
+#endif
+
+#ifndef DATA_LENGTH
+#define DATA_LENGTH                     64
+#endif
+
+#define LENGTH_TO_CHECK (DATA_LENGTH)
+
+
+int main() {
+    snrt_interrupt_enable(IRQ_M_CLUSTER);
+    //snrt_int_clr_mcip();
+
+    // Set default values
+    double init_data = 15.0 + (double) snrt_cluster_idx();
+
+    // Get core id
+    uint32_t core_id = snrt_cluster_core_idx();
+	uint32_t cluster_id = snrt_cluster_idx();
+
+    // Set the mask for the multicast
+    uint64_t mask = SNRT_BROADCAST_MASK;
+
+    // Allocate destination buffer
+    double *buffer_dst = (double*) snrt_l1_next_v2();
+    double *buffer_src = buffer_dst + DATA_LENGTH;
+
+    // Fill the source buffer with the init data
+    if (snrt_is_dm_core()) {
+        for (uint32_t i = 0; i < DATA_LENGTH; i++) {
+            buffer_src[i] = init_data + (double) i;
+        }
+    }
+
+    // Wait until the cluster are finished (Guard dma call aginst the one in the startup script)
+    snrt_global_barrier();
+    
+    // Init the DMA multicast
+    if (snrt_is_dm_core()) {
+        snrt_dma_start_1d_reduction(snrt_remote_l1_ptr(buffer_dst, cluster_id, TARGET_CLUSTER), buffer_src, DATA_LENGTH * sizeof(double), mask, SNRT_REDUCTION_FADD);
+        snrt_dma_wait_all();
+    }
+
+    // Wait until the cluster are finished
+    snrt_global_barrier();
+
+    // Cluster 0 checks if the data in its buffer are correct
+    if (snrt_is_dm_core() && (cluster_id == TARGET_CLUSTER)) {
+        uint32_t n_errs = LENGTH_TO_CHECK;
+        double base_value = (snrt_cluster_num()*15.0) + (double) (((snrt_cluster_num()-1) * ((snrt_cluster_num()-1) + 1)) >> 1);
+        for (uint32_t i = 0; i < LENGTH_TO_CHECK; i++) {
+            if (buffer_dst[i] == base_value){
+                n_errs--;
+            }
+            base_value = base_value + (double) snrt_cluster_num();
+        }
+        return n_errs;
+    } else {
+        return 0;
+    }
+  }

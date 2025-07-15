@@ -29,6 +29,8 @@ int main() {
   *(volatile uint64_t *)&(picobello_addrmap.cluster[0].peripheral_reg.cl_clint_set.w) = (1 << CFG_CLUSTER_NR_CORES) - 1;
 
   // Wait until all cores have finished
+  // The LSB Bit of the return code of the snitch is always set - so we can pull for that!
+  // The "real" return value of the snitch cores are shifted by one bit!
   int all_finished = 0;
   while (!all_finished) {
     all_finished = 1;

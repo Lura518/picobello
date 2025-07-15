@@ -263,7 +263,7 @@ package picobello_pkg;
   typedef logic [aw_bt'(AxiCfgN.AddrWidth)-1:0] user_mask_t;
 
   typedef struct packed {
-    user_mask_t                                   mcast_mask;
+    user_mask_t                                   mask;
     logic [snitch_cluster_pkg::AtomicIdWidth-1:0] atomic;
   } mcast_user_t;
 
@@ -289,7 +289,6 @@ package picobello_pkg;
   // Packed original SAM with extra information necessary for multicast handling
   function automatic sam_multicast_rule_t [SamNumRules-1:0] get_sam_multicast();
     sam_multicast_rule_t [SamNumRules-1:0] sam_multicast;
-
     int unsigned len_id_x, len_id_y;
     int unsigned offset_id_x, offset_id_y;
     int unsigned empty_cols, empty_rows;
@@ -390,6 +389,62 @@ package picobello_pkg;
     $display("]");
     $display("----------------------------------------------------------");
   endfunction
+
+  /////////////////////
+  //   REDUCTION     //
+  /////////////////////
+
+  // Support Reduction on the Wide port
+  localparam bit EnWideOffloadReduction = 1;
+  localparam bit EnNarrowOffloadReduction = 1;
+  localparam bit EnParallelReduction = 1;
+
+  typedef struct packed {
+    user_mask_t                                   mcast_mask;
+    floo_pkg::collect_comm_e                      coll_type;
+    floo_pkg::reduction_op_t                      coll_op;
+    logic [snitch_cluster_pkg::AtomicIdWidth-1:0] atomic;
+  } reduction_narrow_user_t;
+
+  typedef struct packed {
+    user_mask_t                     mcast_mask;
+    floo_pkg::collect_comm_e        coll_type;
+    floo_pkg::reduction_op_t        coll_op;
+  } reduction_wide_user_t;
+
+  // Configurations for the Reductions
+  // Stupid asolution which allows me to overwrite the Reduction confiuration without endagering everything
+  // raroth - overwrite benchmark autotest - start
+localparam reduction_cfg_t WideReductionCfg = '{
+    RdControllConf: ControllerGeneric,
+    RdFifoFallThrough: 1'b1,
+    RdFifoDepth: 2,
+    RdPipelineDepth: 5,
+    RdPartialBufferSize: 3,
+    RdTagBits: 5,
+    RdSupportAxi: 1'b1,
+    RdEnableBypass: 1'b1,
+    RdSupportLoopback: 1'b1
+  };
+  // raroth - overwrite benchmark autotest - end
+
+localparam reduction_cfg_t NarrowReductionCfg = '{
+    RdControllConf: ControllerGeneric,
+    RdFifoFallThrough: 1'b1,
+    RdFifoDepth: 2,
+    RdPipelineDepth: 5,
+    RdPartialBufferSize: 3,
+    RdTagBits: 5,
+    RdSupportAxi: 1'b1,
+    RdEnableBypass: 1'b1,
+    RdSupportLoopback: 1'b1
+  };
+
+localparam reduction_cfg_t ResponseReductionCfg = '{
+    RdEnableBypass: 1'b1,
+    RdSupportLoopback: 1'b1,
+    default: '0
+  };
 
   ////////////////
   //  Cheshire  //

@@ -30,12 +30,10 @@
 
 
 static inline void dma_broadcast_to_clusters(void* dst, void* src, size_t size) {
-    // snrt_enable_multicast(BCAST_MASK_ACTIVE);
     if (snrt_is_dm_core() && (snrt_cluster_idx() == 0)) {
-        snrt_dma_start_1d_mcast(snrt_remote_l1_ptr(dst, 0, 1), src, size, BCAST_MASK_ACTIVE);
+        snrt_dma_start_1d_mcast((uint64_t) snrt_remote_l1_ptr(dst, 0, 1), (uint64_t) src, size, (uint64_t) BCAST_MASK_ACTIVE);
         snrt_dma_wait_all();
     }
-    // snrt_disable_multicast();
 }
 
 static inline int cluster_participates_in_bcast(int i) {
@@ -66,7 +64,7 @@ int main() {
     // snrt_int_clr_mcip();
 
     // Allocate destination buffer
-    uint32_t *buffer_dst = (uint32_t *)snrt_l1_next_v2();
+    uint32_t *buffer_dst = (uint32_t*) snrt_l1_next_v2();
     uint32_t *buffer_src = buffer_dst + LENGTH;
 
     // First cluster initializes the source buffer and multicast-

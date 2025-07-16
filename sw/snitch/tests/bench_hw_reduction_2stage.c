@@ -66,6 +66,30 @@ static inline int cluster_participates_in_second_stage_reduction(int cluster_nr)
     }
 }
 
+/**
+ * @brief Verify if the data are properly copied. Please adapt the algorythm if you change the data generation
+ * @param cluster_nr cluster id
+ * @param ptrData pointer to fetch the data from
+ */
+static inline uint32_t cluster_verify_reduction(int cluster_nr, double * ptrData) {
+    // Evaluate the reduction result
+    if (snrt_is_dm_core() && (cluster_nr == TARGET_CLUSTER)) {
+        uint32_t n_errs = DATA_EVAL_LENGTH;
+        double base_value = (NUMBER_OF_CLUSTERS*15.0) + (double) (((NUMBER_OF_CLUSTERS-1) * ((NUMBER_OF_CLUSTERS-1) + 1)) >> 1);
+        for (uint32_t i = 0; i < DATA_EVAL_LENGTH; i++) {
+            if (*ptrData == base_value){
+                n_errs--;
+            }
+            base_value = base_value + (double) NUMBER_OF_CLUSTERS;
+            ptrData = ptrData + 1;
+        }
+        return n_errs;
+    } else {
+        return 0;
+    }
+}
+
+
 // Main code
 int main() {
     snrt_interrupt_enable(IRQ_M_CLUSTER);
@@ -168,19 +192,5 @@ int main() {
     }
 
     // Evaluate the reduction result
-    if (snrt_is_dm_core() && (cluster_id == TARGET_CLUSTER)) {
-        uint32_t n_errs = DATA_EVAL_LENGTH;
-        double base_value = (NUMBER_OF_CLUSTERS*15.0) + (double) (((NUMBER_OF_CLUSTERS-1) * ((NUMBER_OF_CLUSTERS-1) + 1)) >> 1);
-        for (uint32_t i = 0; i < DATA_EVAL_LENGTH; i++) {
-            if (buffer_dst[i] == base_value){
-                n_errs--;
-            }
-            base_value = base_value + (double) NUMBER_OF_CLUSTERS;
-        }
-        return n_errs;
-    } else {
-        return 0;
-    }
-
-    return 0;
+    return cluster_verify_reduction(cluster_id, buffer_dst);
 }

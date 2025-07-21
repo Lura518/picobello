@@ -10,6 +10,30 @@
 // and only in a second step we reduce in a x direction. This allows us to make a much
 // more simpler hw controller for the reduction as each cluster needs only to reduce
 // from two direction.
+//
+// The target for the first stage are depending on the target cluster
+// Final Target = 0 or 12 (On the "bottom" of picobello):
+//  ---- ---- ---- ---- 
+// |  3 |  7 | 11 | 15 | V
+//  ---- ---- ---- ---- 
+// |  2 |  6 | 10 | 14 | V
+//  ---- ---- ---- ---- 
+// |  1 |  5 |  9 | 13 | V
+//  ---- ---- ---- ---- 
+// |  0 |  4 |  8 | 12 | < Intermidiate Targets
+//  ---- ---- ---- ---- 
+//
+// Target = 3 or 15 (On the "top" of picobello):
+//  ---- ---- ---- ---- 
+// |  3 |  7 | 11 | 15 | < Intermidiate Targets
+//  ---- ---- ---- ---- 
+// |  2 |  6 | 10 | 14 | A 
+//  ---- ---- ---- ---- 
+// |  1 |  5 |  9 | 13 | A
+//  ---- ---- ---- ---- 
+// |  0 |  4 |  8 | 12 | A
+//  ---- ---- ---- ---- 
+//
 // As restriction the target cluster needs to be a corener cluster, otherwise the code will
 // fail!
 
@@ -27,11 +51,11 @@
 #endif
 
 #ifndef TARGET_CLUSTER
-#define TARGET_CLUSTER                  0
+#define TARGET_CLUSTER                  12
 #endif
 
 #ifndef DATA_BYTE
-#define DATA_BYTE                       512
+#define DATA_BYTE                       2048
 #endif
 
 // Translate from byte into doubles
@@ -59,7 +83,7 @@ static inline int cluster_participates_in_reduction(int cluster_nr) {
  * @param cluster_nr cluster id
  */
 static inline int cluster_participates_in_second_stage_reduction(int cluster_nr) {
-    if((TARGET_CLUSTER == 3) or (TARGET_CLUSTER == 0)){
+    if((TARGET_CLUSTER == 0) || (TARGET_CLUSTER == 12)){
         return (((cluster_nr % 4) == 0) && (cluster_nr < NUMBER_OF_CLUSTERS));  // Select cluster nr 0, 4, 8, 12
     } else {
         return (((cluster_nr % 4) == 3) && (cluster_nr < NUMBER_OF_CLUSTERS));  // Select cluster nr 3, 7, 11, 15
@@ -106,7 +130,12 @@ int main() {
 
     // Cluster ID
     uint32_t cluster_id = snrt_cluster_idx();
-    uint32_t target_cluster_stage_1 = (cluster_id / 4) << 2; 
+    uint32_t target_cluster_stage_1 = 0;
+    if((TARGET_CLUSTER == 0) or (TARGET_CLUSTER == 12)){
+        target_cluster_stage_1 = (cluster_id / 4) * 4;
+    } else {
+        target_cluster_stage_1 = ((cluster_id / 4) * 4) + 3;
+    }
 
     // Set the mask for the multicast
     uint64_t mask_stage_1 = REDUCTION_MASK_STAGE_1;

@@ -90,8 +90,6 @@ module spm_tile
     .NumRoutes                (5),
     .InFifoDepth              (2),
     .OutFifoDepth             (2),
-    .InFifoDepthReduction     (2),
-    .OutFifoDepthReduction    (2),
     .EnCollWideVirtChannel    (1'b1),
     .EnCollNarrowVirtChannel  (1'b0),
     .id_t                     (id_t),

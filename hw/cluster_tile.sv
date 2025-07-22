@@ -482,8 +482,6 @@ floo_nw_router #(
     .NumRoutes                (5),
     .InFifoDepth              (2),
     .OutFifoDepth             (2),
-    .InFifoDepthReduction     (2),
-    .OutFifoDepthReduction    (2),
     .NoLoopback               (1'b0),
     .EnMultiCast              (RouteCfg.EnMultiCast),
     .EnParallelReduction      (EnParallelReduction),

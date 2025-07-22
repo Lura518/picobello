@@ -114,8 +114,6 @@ module cheshire_tile
     .NumRoutes                      (5),
     .InFifoDepth                    (2),
     .OutFifoDepth                   (2),
-    .InFifoDepthReduction           (2),
-    .OutFifoDepthReduction          (2),
     .id_t                           (id_t),
     .hdr_t                          (hdr_t),
     .floo_req_t                     (floo_req_t),

@@ -209,6 +209,13 @@ int main (void){
             buffer_src[i] = init_data + (double) i;
         }
     }
+    
+    // Set all intermidiate buffer to 0.0
+    if (snrt_is_dm_core()) {
+        for(int i = 0; i < (DATA_PER_STAGE*2*4);i++){
+            *(buffer_inter + i) = 0.0;
+        }
+    }
 
     // Wait until the cluster are finished
     snrt_global_barrier();

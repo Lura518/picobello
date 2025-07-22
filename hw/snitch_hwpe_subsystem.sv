@@ -206,7 +206,6 @@ module snitch_hwpe_subsystem
     .clk_o    (hwpe_clk[1])
   );
 
-/*
   redmule_top #(
     .ID_WIDTH     (IdWidth),
     .N_CORES      (NrCores),
@@ -221,9 +220,6 @@ module snitch_hwpe_subsystem
     .tcdm       (tcdm_to_mux[0]),
     .periph     (periph[0])
   );
-  */
-  assign evt[0] = '0;
-  assign busy = '0;
 
   datamover_top #(
     .ID           (IdWidth),

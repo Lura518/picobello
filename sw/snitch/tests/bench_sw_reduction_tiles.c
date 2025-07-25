@@ -5,7 +5,7 @@
 // Raphael Roth <raroth@student.ethz.ch>
 //
 // This code can be used to benchmark the reduction feature of the picobello system.
-// It supports the star based approach of sw reduction
+// It supports the tile based approach of sw reduction
 
 // Dataflow
 // The first stage reduce 4 cluster together while the second stage reduces the intermidiate clusters.
@@ -29,8 +29,8 @@
 // #D3 = A1* + B1* + C1* + D1*
 //
 // Limitation:
-// - The First stage is equal for all target cluster to simplify the sw.
-// - To further simplify the sw we support only 8 / 12 reducting cluster
+// - The target position of the first stage is equal for all target cluster to simplify the sw.
+// - To further simplify the sw we support only 8 / 16 reducting cluster
 // - The target cluster can not be A1 / B1 / C1 / D1 as otherwise the stages doesn't match properly
 // - We assum that the computation takes always longer than the dma transfer e.g. at the end of the computation
 //   the data are inside the new memory addresses (No real good way to check if transfer complete unless polling the register)
@@ -182,8 +182,7 @@ int main (void){
     // Allocate destination buffer
     double *buffer_src = (double*) snrt_l1_next_v2();       // Source buffer (s: DATA_LENGTH)
     double *buffer_dst = buffer_src + DATA_LENGTH;          // Destination buffer (s: DATA_LENGTH)
-    double *buffer_temp = buffer_dst + DATA_LENGTH;         // Temporary storage for reduction intermidiate result (only used in target cluster) (s: 2*DATA_PER_STAGE)
-    double *buffer_inter = buffer_temp + 2*DATA_PER_STAGE;    // Buffer as target destination for all DMA's (s: 2*4*DATA_PER_STAGE)
+    double *buffer_inter = buffer_dst + 2*DATA_PER_STAGE;    // Buffer as target destination for all DMA's (s: 2*4*DATA_PER_STAGE)
 
     // Allocate remaining vars
     double *data_ptr = buffer_src;
@@ -201,7 +200,7 @@ int main (void){
             {(double*) snrt_remote_l1_ptr(buffer_inter + (offset_target_inter_stage_2[cluster_id] * DATA_PER_STAGE), cluster_id, TARGET_CLUSTER),
             (double*) snrt_remote_l1_ptr(buffer_inter + ((CLUSTER_PER_TILE + offset_target_inter_stage_2[cluster_id]) * DATA_PER_STAGE), cluster_id, TARGET_CLUSTER)};
     double *ptr_local_target[2] = {buffer_inter, buffer_inter + CLUSTER_PER_TILE*DATA_PER_STAGE};
-    double *ptr_local_temp[2] = {buffer_temp, buffer_temp + DATA_PER_STAGE};
+    double *ptr_local_temp[2] = {buffer_dst, buffer_dst + DATA_PER_STAGE};  // We re-use the dst buffer as only the Target Cluster uses these
 
     // Fill the source buffer with the init data
     if (snrt_is_dm_core()) {

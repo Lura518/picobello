@@ -164,9 +164,6 @@ int main() {
         }
     }
 
-    // Wait until the cluster are finished
-    snrt_global_barrier();
-
     // Do it 3 time to preheat the cache
     for(volatile int i = 0; i < 3; i++){
         // Reset the last entry from prior loop (if @ end of loop > check at end fails)
@@ -176,6 +173,9 @@ int main() {
         if((cluster_id == TARGET_CLUSTER) && snrt_is_dm_core()){
             *buffer_last_entry_stage_2 = fill_value;
         }
+
+        // Wait until the cluster are finished
+        snrt_global_barrier();
 
         // Start tracking the reduction
         snrt_mcycle();
@@ -216,9 +216,10 @@ int main() {
         // Stop tracking the reduction
         snrt_mcycle();
 
-        // Wait until the cluster are finished
-        snrt_global_barrier();
     }
+
+    // Wait until the cluster are finished
+    snrt_global_barrier();
 
     // Evaluate the reduction result
     return cluster_verify_reduction(cluster_id, buffer_dst);

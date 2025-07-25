@@ -290,7 +290,7 @@ packages:
       Git: https://github.com/pulp-platform/L2_tcdm_hybrid_interco.git
     dependencies: []
   obi:
-    revision: 8ceb36dd8b1a2179d56cc7ddb0c31d6b11257a28
+    revision: acfcd0f80c7539aa8da7821a66d9acf2074a5b4e
     version: null
     source:
       Git: https://github.com/pulp-platform/obi.git
@@ -370,7 +370,7 @@ packages:
     - common_cells
     - register_interface
   snitch_cluster:
-    revision: 4321c6dbd41c27d9eeac8402ed989482d2e7de79
+    revision: 12d417831640b78320a4f70a1a26485b9ca30fd8
     version: null
     source:
       Git: https://github.com/Lura518/snitch_cluster.git

@@ -13,17 +13,23 @@
 #include "pb_addrmap.h"
 #include "snrt.h"
 
+// use this define to enable "row" reduction instead of columne reduction
+// has only a effect if Number of cluster is 8!
+#ifndef REDUCE_IN_ROW
+#define REDUCE_IN_ROW                   0
+#endif
+
 // Benchmark Parameter:
 #ifndef NUMBER_OF_CLUSTERS
-#define NUMBER_OF_CLUSTERS              8   // Needs to be either 2 / 4 / 8 / 16
+#define NUMBER_OF_CLUSTERS              16   // Needs to be either 4 / 8 / 16
 #endif
 
 #ifndef TARGET_CLUSTER
-#define TARGET_CLUSTER                  6
+#define TARGET_CLUSTER                  4
 #endif
 
 #ifndef DATA_BYTE
-#define DATA_BYTE                       512
+#define DATA_BYTE                       8192
 #endif
 
 // Translate from byte into doubles
@@ -34,14 +40,30 @@
 #define DATA_EVAL_LENGTH    (DATA_LENGTH)
 
 // Define the reduction mask depending on the number of involved clusters
-#define REDUCTION_MASK      ((NUMBER_OF_CLUSTERS - 1) << 18)
+// When we reduce in the row then the mask is hardcoded!
+#if REDUCE_IN_ROW == 0
+    #define REDUCTION_MASK      ((NUMBER_OF_CLUSTERS - 1) << 18)
+#else
+    #define GROUND_MASK (((NUMBER_OF_CLUSTERS == 4) * 12) + ((NUMBER_OF_CLUSTERS == 8) * 13) + ((NUMBER_OF_CLUSTERS == 16) * 15))
+    #define REDUCTION_MASK      (GROUND_MASK << 18)
+#endif
 
 /**
  * @brief Return if the cluster is involved in the reduction or not.
  * @param cluster_nr cluster id
  */
 static inline int cluster_participates_in_reduction(int cluster_nr) {
+#if REDUCE_IN_ROW == 0
     return (cluster_nr < NUMBER_OF_CLUSTERS);
+#else
+    if(NUMBER_OF_CLUSTERS == 4){
+        return ((cluster_nr % 4) == 0);
+    } else if(NUMBER_OF_CLUSTERS == 8){
+        return (((cluster_nr % 4) == 0) || ((cluster_nr % 4) == 1));
+    } else {
+        return (cluster_nr < NUMBER_OF_CLUSTERS);
+    }
+#endif
 }
 
 /**
@@ -53,7 +75,18 @@ static inline uint32_t cluster_verify_reduction(int cluster_nr, double * ptrData
     // Evaluate the reduction result
     if (snrt_is_dm_core() && (cluster_nr == TARGET_CLUSTER)) {
         uint32_t n_errs = DATA_EVAL_LENGTH;
-        double base_value = (NUMBER_OF_CLUSTERS*15.0) + (double) (((NUMBER_OF_CLUSTERS-1) * ((NUMBER_OF_CLUSTERS-1) + 1)) >> 1);
+#if REDUCE_IN_ROW == 0
+        double base_value = (NUMBER_OF_CLUSTERS * 15.0) + (double) (((NUMBER_OF_CLUSTERS-1) * ((NUMBER_OF_CLUSTERS-1) + 1)) >> 1);
+#else
+        double base_value = 0.0;
+        if(NUMBER_OF_CLUSTERS == 4){
+            base_value = (NUMBER_OF_CLUSTERS * 15.0) + 24.0;
+        } else if(NUMBER_OF_CLUSTERS == 8){
+            base_value = (NUMBER_OF_CLUSTERS * 15.0) + 52.0;
+        } else {
+            base_value = (NUMBER_OF_CLUSTERS * 15.0) + 120.0;
+        }
+#endif
         for (uint32_t i = 0; i < DATA_EVAL_LENGTH; i++) {
             if (*ptrData == base_value){
                 n_errs--;

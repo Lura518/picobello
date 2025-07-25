@@ -50,3 +50,6 @@ modelsim.ini
 transcript
 logs
 **/*.log
+
+# ignore tracer files
+tracer/*.txt

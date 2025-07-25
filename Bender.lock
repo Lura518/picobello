@@ -15,15 +15,15 @@ packages:
     - apb
     - common_cells
   apb_uart:
-     revision: 8182a85d234417db46fe833533f8536644d3bee3
-     version: 0.2.3
-     source:
-       Git: https://github.com/pulp-platform/apb_uart.git
-     dependencies:
-     - apb
-     - obi
-     - obi_peripherals
-     - register_interface
+    revision: 8182a85d234417db46fe833533f8536644d3bee3
+    version: 0.2.3
+    source:
+      Git: https://github.com/pulp-platform/apb_uart.git
+    dependencies:
+    - apb
+    - obi
+    - obi_peripherals
+    - register_interface
   axi:
     revision: 54f34008a999441c5e94c95679f5c2aeb4fe32d8
     version: null
@@ -298,13 +298,13 @@ packages:
     - common_cells
     - common_verification
   obi_peripherals:
-     revision: 079894a6cbd4e544c477643d184a4c340bd4e391
-     version: 0.1.1
-     source:
-       Git: https://github.com/pulp-platform/obi_peripherals.git
-     dependencies:
-     - common_cells
-     - obi
+    revision: 079894a6cbd4e544c477643d184a4c340bd4e391
+    version: 0.1.1
+    source:
+      Git: https://github.com/pulp-platform/obi_peripherals.git
+    dependencies:
+    - common_cells
+    - obi
   opentitan_peripherals:
     revision: cd3153de2783abd3d03d0595e6c4b32413c62f14
     version: 0.4.0
@@ -370,7 +370,7 @@ packages:
     - common_cells
     - register_interface
   snitch_cluster:
-    revision: 9459607db9c461f753b90af1ed1fb5a0a041fe26
+    revision: 4321c6dbd41c27d9eeac8402ed989482d2e7de79
     version: null
     source:
       Git: https://github.com/Lura518/snitch_cluster.git

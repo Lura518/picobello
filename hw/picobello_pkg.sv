@@ -414,7 +414,9 @@ package picobello_pkg;
 
   // Configurations for the Reductions
   // Stupid asolution which allows me to overwrite the Reduction confiuration without endagering everything
-  // ATTENTION: RdPartialBufferSize Needs to be bigger than the "RdPipelineDepth" otherwise we can build a deadlock
+  // ATTENTION: 
+  // @GENERIC Implementation: RdPartialBufferSize Needs to be bigger than the "RdPipelineDepth" otherwise we can build a deadlock
+  // @STALLING Implementation: min(ceil(log2(NumRoutes)), RdPipelineDepth+1)
   // TODO: Add Assertion to check this
   // raroth - overwrite benchmark autotest - start
 localparam reduction_cfg_t WideReductionCfg = '{

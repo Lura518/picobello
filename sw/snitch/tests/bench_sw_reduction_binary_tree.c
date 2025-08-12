@@ -24,7 +24,7 @@
 #include "snrt.h"
 
 #ifndef NUMBER_OF_CLUSTERS
-#define NUMBER_OF_CLUSTERS              8
+#define NUMBER_OF_CLUSTERS              4
 #endif
 
 #define HARDCODED_TARGET_CLUSTER        0
@@ -101,10 +101,6 @@ int main (void){
     snrt_interrupt_enable(IRQ_M_CLUSTER);
 
     // Sanity check:
-    // Number of cluster should be either 8 or 16
-    if((NUMBER_OF_CLUSTERS % 8) != 0){
-        return 1;
-    }
     // Data should be dividable by number of stages
     if((DATA_LENGTH % STAGES) != 0){
         return 1;
@@ -138,6 +134,9 @@ int main (void){
     uint32_t dma_core_active[3][16] = { {  4,  5,  6,  7,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15},
                                         {  0,  1,  2,  3,  1,  1,  3,  3,  8,  9, 10, 11, 12, 13, 14, 15},
                                         {  0,  0,  2,  0,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15}};
+#else
+    uint32_t dma_core_active[2][16] = { {  1,  1,  3,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15},
+                                        {  0,  0,  2,  0,  1,  1,  3,  3,  8,  9, 10, 11, 12, 13, 14, 15}};
 #endif
     */
 
@@ -147,10 +146,13 @@ int main (void){
     uint64_t dma_core_active_stg3 = 0xFEDCAAA876542220;
     uint64_t dma_core_active_stg4 = 0xFEDCB09876543010;
 
-#else
+#elif NUMBER_OF_CLUSTERS == 8
     uint64_t dma_core_active_stg1 = 0xFEDCBA9876547654;
     uint64_t dma_core_active_stg2 = 0xFEDCBA9833113210;
     uint64_t dma_core_active_stg3 = 0xFEDCBA9876540200;
+#else
+    uint64_t dma_core_active_stg1 = 0xFEDCBA9876543311;
+    uint64_t dma_core_active_stg2 = 0xFEDCBA9876540200;
 #endif
 
     // Same here
@@ -165,6 +167,9 @@ int main (void){
     uint32_t compute_core_active[3][16] = { {  0,  0,  0,  0,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0},
                                             {  0,  1,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
                                             {  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0}};
+#else
+    uint32_t compute_core_active[2][16] = { {  0,  1,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+                                            {  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0}};
 #endif
 */
 
@@ -173,10 +178,13 @@ int main (void){
     uint32_t compute_core_active_stg2 = 0b00000000000000000000101000001010;
     uint32_t compute_core_active_stg3 = 0b00000000000000000000010000000100;
     uint32_t compute_core_active_stg4 = 0b00000000000000000000000000000001;
-#else
+#elif NUMBER_OF_CLUSTERS == 8
     uint32_t compute_core_active_stg1 = 0b00000000000000000000000011110000;
     uint32_t compute_core_active_stg2 = 0b00000000000000000000000000001010;
     uint32_t compute_core_active_stg3 = 0b00000000000000000000000000000001;
+#else
+    uint32_t compute_core_active_stg1 = 0b00000000000000000000000000001010;
+    uint32_t compute_core_active_stg2 = 0b00000000000000000000000000000001;
 #endif
 
     // Allocate destination buffer
@@ -252,13 +260,19 @@ int main (void){
                 extraced_cluster_id = ((uint32_t) (dma_core_active_stg2 >> shift_cluster_id)) & 0xF;
                 if((extraced_cluster_id != cluster_id) && (j > 1) && (j < (STAGES+2))){
                     // Calc remote target address
+                    // Hotfix to support reduction with only 4 cluster - neeedsto be fixed!!!
+# if(NUMBER_OF_CLUSTERS == 4)
+                    double * src_local = (double *) snrt_remote_l1_ptr(ptr_local_intermidiate_in[itr_stg2][(cluster_id >> 1) % 2], cluster_id, extraced_cluster_id);
+#else
                     double * src_local = (double *) snrt_remote_l1_ptr(ptr_local_intermidiate_in[itr_stg2][cluster_id % 2], cluster_id, extraced_cluster_id);
+#endif
                     // Start the DMA transfer
                     snrt_dma_start_1d(src_local, ptr_local_intermidiate_out[itr_stg2], DATA_PER_STAGE * sizeof(double));
                     // Modify metadata
                     itr_stg2 = itr_stg2 ^ 1;
                 }
 
+#if ((NUMBER_OF_CLUSTERS == 8) || (NUMBER_OF_CLUSTERS == 16))
                 // Third Level
                 extraced_cluster_id = ((uint32_t) (dma_core_active_stg3 >> shift_cluster_id)) & 0xF;
                 if((extraced_cluster_id != cluster_id) && (j > 3) && (j < (STAGES+4))){
@@ -269,6 +283,7 @@ int main (void){
                     // Modify metadata
                     itr_stg3 = itr_stg3 ^ 1;
                 }
+#endif
 
 #if NUMBER_OF_CLUSTERS == 16
                 // Forth (optinal) Level
@@ -300,6 +315,7 @@ int main (void){
                     itr_stg1 = itr_stg1 ^ 1;
                 }
 
+#if NUMBER_OF_CLUSTERS == 16
                 // Second Level
                 if((((compute_core_active_stg2 >> cluster_id) & 1) == 1) && (j > 2) && (j < (STAGES+3))){
                     // Reduce the first vector together
@@ -308,7 +324,6 @@ int main (void){
                     itr_stg2 = itr_stg2 ^ 1;
                 }
 
-#if NUMBER_OF_CLUSTERS == 16
                 // Third Level
                 if((((compute_core_active_stg3 >> cluster_id) & 1) == 1) && (j > 4) && (j < (STAGES+5))){
                     // Reduce the first vector together
@@ -325,7 +340,15 @@ int main (void){
                     data_ptr_target = data_ptr_target + DATA_PER_STAGE;
                     itr_stg4 = itr_stg4 ^ 1;
                 }
-#else
+#elif NUMBER_OF_CLUSTERS == 8
+                // Second Level
+                if((((compute_core_active_stg2 >> cluster_id) & 1) == 1) && (j > 2) && (j < (STAGES+3))){
+                    // Reduce the first vector together
+                    cluster_reduce_array_slice(ptr_local_intermidiate_in[itr_stg2][0], ptr_local_intermidiate_in[itr_stg2][1], ptr_local_intermidiate_out[itr_stg2]);
+                    // Modify metadata
+                    itr_stg2 = itr_stg2 ^ 1;
+                }
+
                 // Third Level
                 if((((compute_core_active_stg3 >> cluster_id) & 1) == 1) && (j > 4)){
                     // Reduce the first vector together
@@ -333,6 +356,15 @@ int main (void){
                     // Modify metadata
                     data_ptr_target = data_ptr_target + DATA_PER_STAGE;
                     itr_stg3 = itr_stg3 ^ 1;
+                }
+#else
+                // Second Level
+                if((((compute_core_active_stg2 >> cluster_id) & 1) == 1) && (j > 2) && (j < (STAGES+3))){
+                    // Reduce the first vector together
+                    cluster_reduce_array_slice(ptr_local_intermidiate_in[itr_stg2][0], ptr_local_intermidiate_in[itr_stg2][1], data_ptr_target);
+                    // Modify metadata
+                    data_ptr_target = data_ptr_target + DATA_PER_STAGE;
+                    itr_stg2 = itr_stg2 ^ 1;
                 }
 #endif
             }

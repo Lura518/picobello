@@ -18,7 +18,10 @@
 #endif
 
 #define HARDCODED_TARGET_CLUSTER        0
-#define HARDCODED_NUMBER_CLUSTER        16
+
+#ifndef NUMBER_OF_CLUSTERS
+#define NUMBER_OF_CLUSTERS              16
+#endif
 
 // Translate from byte into doubles
 #ifndef DATA_LENGTH
@@ -37,12 +40,12 @@ static inline uint32_t cluster_verify_reduction(int cluster_nr, double * ptrData
     // Evaluate the reduction result
     if (snrt_is_dm_core() && (cluster_nr == HARDCODED_TARGET_CLUSTER)) {
         uint32_t n_errs = DATA_EVAL_LENGTH;
-        double base_value = (HARDCODED_NUMBER_CLUSTER*15.0) + (double) (((HARDCODED_NUMBER_CLUSTER-1) * ((HARDCODED_NUMBER_CLUSTER-1) + 1)) >> 1);
+        double base_value = (NUMBER_OF_CLUSTERS*15.0) + (double) (((NUMBER_OF_CLUSTERS-1) * ((NUMBER_OF_CLUSTERS-1) + 1)) >> 1);
         for (uint32_t i = 0; i < DATA_EVAL_LENGTH; i++) {
             if (*ptrData == base_value){
                 n_errs--;
             }
-            base_value = base_value + (double) HARDCODED_NUMBER_CLUSTER;
+            base_value = base_value + (double) NUMBER_OF_CLUSTERS;
             ptrData = ptrData + 1;
         }
         return n_errs;
@@ -83,7 +86,7 @@ int main (void){
         snrt_mcycle();
 
         // Perform the existing reduction
-        snrt_global_reduction_dma(buffer_dst, buffer_src, DATA_LENGTH);
+        snrt_global_reduction_dma(buffer_dst, buffer_src, DATA_LENGTH, NUMBER_OF_CLUSTERS);
 
         // Get perf of the reduction
         snrt_mcycle();

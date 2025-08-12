@@ -138,6 +138,7 @@ static inline void cluster_reduce_array_slice(double * ptrDataSrc1, double * ptr
  */
 static inline void cluster_reduce_tile(double *ptrDataLocal, double *ptrDataRemote, double *ptrTarget, const uint32_t f_useLocal) {
     // Either choose the local data or the first entry in the remote buffer
+#if NUMBER_OF_CLUSTERS == 16
     if(f_useLocal == 1){
         cluster_reduce_array_slice(ptrDataRemote, ptrDataLocal, ptrTarget);
     } else {
@@ -145,6 +146,17 @@ static inline void cluster_reduce_tile(double *ptrDataLocal, double *ptrDataRemo
     }
     cluster_reduce_array_slice(ptrDataRemote + 2*DATA_PER_STAGE, ptrTarget, ptrDataRemote);
     cluster_reduce_array_slice(ptrDataRemote, ptrDataRemote + 3*DATA_PER_STAGE, ptrTarget);
+# else
+    // When using only 8 clusters then the second reduction only needs to reduce from two tiles instead of 4!
+    if(f_useLocal == 1){
+        cluster_reduce_array_slice(ptrDataRemote, ptrDataLocal, ptrTarget);
+        cluster_reduce_array_slice(ptrDataRemote + 2*DATA_PER_STAGE, ptrTarget, ptrDataRemote);
+        cluster_reduce_array_slice(ptrDataRemote, ptrDataRemote + 3*DATA_PER_STAGE, ptrTarget);
+    } else {
+        cluster_reduce_array_slice(ptrDataRemote, ptrDataRemote + DATA_PER_STAGE, ptrTarget);
+    }
+
+#endif
 }
 
 int main (void){

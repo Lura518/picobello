@@ -1,5 +1,5 @@
 [
-    <% N_TILES = 1 %>
+    <% N_TILES = 3 %>
 
     % for cluster in range(0,15):
         // Compute cores
@@ -8,7 +8,7 @@
             "thread": "${f'hart_{cluster*9+j+1}'}",
             "roi": [
             % for i in range(0, N_TILES):
-                {"idx": ${2 * i + 1}, "label": "${f'tile_{i}'}"},
+                {"idx": ${2 * i + 1}, "label": "${f'tile_reduction_{i}'}"},
             % endfor
             ]
         },
@@ -17,10 +17,10 @@
         // DMA core
         {
 
-            "thread": "${f'hart_9'}",
+            "thread": "${f'hart_{cluster*9+9}'}",
             "roi": [
                 % for i in range(0, N_TILES):
-                    {"idx": ${2 * i + 1}, "label": "${f'tile_{i}'}"},
+                    {"idx": ${2 * i + 1}, "label": "${f'dma_tile_{i}'}"},
                 % endfor
             ]
         },

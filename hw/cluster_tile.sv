@@ -116,6 +116,9 @@ module cluster_tile
   logic                                 offload_wide_resp_ready;
 
   // Parse the Wide request from the reouter to the one from the snitch cluster!
+  // TODO: possible to remove this decode from the picobello repo and move it inside the 
+  //       FlooNoC repo. Currently the Decode used for the ALU is directly inside the floo_alu.sv
+  //       file. Maybe do the same for the FPU
   if(EnWideOffloadReduction) begin : gen_wide_offload_reduction
     // Connect the Request
     assign offload_dca_req_valid = offload_wide_req_valid;
@@ -172,6 +175,7 @@ module cluster_tile
       endcase
     end
 
+    // TODO: move these spill register inside FlooNoC and make them configurable.
     // Insert a req-cut to avoid timing violations
     spill_register #(
       .T              (snitch_cluster_pkg::dca_router_req_t),

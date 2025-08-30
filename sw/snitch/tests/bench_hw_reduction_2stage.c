@@ -37,6 +37,15 @@
 // As restriction the target cluster needs to be a corener cluster, otherwise the code will
 // fail!
 
+// TODO: The target destination buffer (instantiated on all cluster independent if the cluster are the target or not
+// could be used in the first stage also act as target buffer. Short: optimize the intermidiate buffer away!
+// Afterwards we would have two possible solution:
+// 1. In the target cluster inside the second reduction (so between intermidiate and final target clusters)
+//    we would trigger an dma call which has the same source and destination address. I do not know
+//    if the iDMA supports this!
+// 2. We could actually use the source buffer as the destination buffer for the second reduction!
+//    IMO a ugly solution but we could remove the intermidiate buffer!
+
 #include <stdint.h>
 #include "pb_addrmap.h"
 #include "snrt.h"
@@ -148,7 +157,7 @@ int main() {
     // Allocate destination buffer
     double *buffer_dst = (double*) snrt_l1_next_v2();
     double *buffer_src = buffer_dst + DATA_LENGTH;
-    double *buffer_dst_inter = buffer_src + DATA_LENGTH;
+    double *buffer_dst_inter = buffer_src + DATA_LENGTH;    // TODO could remove this, see beginning of file!
 
     // Determint the target address
     double *buffer_target_stage_1 = (double*) snrt_remote_l1_ptr(buffer_dst_inter, cluster_id, target_cluster_stage_1);
